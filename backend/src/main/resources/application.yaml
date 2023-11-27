@@ -4,3 +4,8 @@ spring:
 logging:
   level:
     org.springframework.security: TRACE
+
+mqtt:
+  host: tcp://10.0.0.20:1883
+  username: ha_mqtt
+  password: ha_mqtt

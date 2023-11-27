@@ -4,6 +4,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.messaging.MessageHandler;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,4 +37,11 @@ public class BackendApplication {
         System.out.println(authentication);
         return "Hello world!";
     }
+
+    @Bean
+    @ServiceActivator(inputChannel = "inboundMqtt")
+    public MessageHandler handler() {
+        return message -> System.out.println(message.getPayload());
+    }
+
 }

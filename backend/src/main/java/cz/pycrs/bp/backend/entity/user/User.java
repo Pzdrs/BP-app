@@ -1,26 +1,25 @@
-package cz.pycrs.bp.backend.entity;
+package cz.pycrs.bp.backend.entity.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import lombok.Data;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.UUID;
 
-@Entity
+@Document("users")
 @Data
 public class User implements UserDetails {
-    protected User() {
-    }
-
-    @Id
-    @GeneratedValue
-    private UUID id;
-    private String username, email;
+    @MongoId
+    private ObjectId id;
+    private String username;
+    @Indexed(unique = true)
+    private String email;
     private String password;
 
     public User(String username, String email, String password) {

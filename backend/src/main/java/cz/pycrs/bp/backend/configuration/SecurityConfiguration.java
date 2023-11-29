@@ -27,7 +27,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(csrf-> {
-                    csrf.csrfTokenRepository(new CookieCsrfTokenRepository());
+                    //csrf.csrfTokenRepository(new CookieCsrfTokenRepository());
+                    csrf.disable();
                 })
                 .cors(cors -> {
                     cors.configurationSource(request -> {

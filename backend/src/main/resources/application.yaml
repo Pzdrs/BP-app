@@ -1,11 +1,11 @@
 spring:
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
+  data:
+    mongodb:
+      database: es-gps
+      host: localhost
+      authentication-database: admin
 logging:
   level:
     org.springframework.security: TRACE
-
-mqtt:
-  host: tcp://10.0.0.20:1883
-  username: ha_mqtt
-  password: ha_mqtt

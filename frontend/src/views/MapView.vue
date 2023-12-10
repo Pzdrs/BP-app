@@ -3,10 +3,7 @@
 </script>
 
 <template>
-  safasdf
-  <v-navigation-drawer location="right" permanent>
-    curak
-  </v-navigation-drawer>
+  mapa pico
 </template>
 
 <style scoped>

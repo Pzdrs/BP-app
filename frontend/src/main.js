@@ -1,12 +1,16 @@
-import 'vuetify/styles'
 import {createApp} from 'vue'
 import App from './App.vue'
 import router from "@/router";
-import vuetify from './plugins/vuetify'
+import {library} from "@fortawesome/fontawesome-svg-core";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import * as fas from "@fortawesome/free-solid-svg-icons";
+
+library.add(fas.faRightToBracket);
 
 const app = createApp(App);
 
-app.use(vuetify);
 app.use(router);
+
+app.component('font-awesome-icon', FontAwesomeIcon);
 
 app.mount('#app');

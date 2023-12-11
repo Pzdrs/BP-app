@@ -1,7 +1,4 @@
 <script setup>
-
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-
 import {onMounted} from "vue";
 import Sidebar from "@/components/Sidebar.vue";
 import Navbar from "@/components/Navbar.vue";
@@ -30,24 +27,6 @@ onMounted(() => {
   <Navbar/>
   <Sidebar/>
   <main>
-    <header>
-      <div class="mb-3">
-        <p class="is-size-3">
-          title
-        </p>
-        <p class="is-size-6 has-text-grey">
-          subtitle
-        </p>
-      </div>
-      <div class="is-flex is-justify-content-space-between">
-        breadcrumb
-        <div></div>
-        <div>
-          status
-        </div>
-      </div>
-    </header>
-    <hr>
     <router-view></router-view>
   </main>
 </template>

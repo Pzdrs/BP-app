@@ -1,18 +1,38 @@
 <script setup>
+
+
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {ref} from "vue";
+import GeneralSettings from "@/views/sub-views/settings/GeneralSettings.vue";
+
+const currentTab = ref('general');
+
 const tabs = [
   {
-    name: "general",
-    label: "General",
-    component: () => import("./sub-views/settings/GeneralSettings.vue"),
-  },
+    id: 'general',
+    name: 'General',
+    icon: 'fas fa-music'
+  }
 ];
-
 </script>
 
 <template>
-  <v-tabs background-color="gray">
-    <v-tab v-for="tab in tabs" :value="tab.name">{{ tab.label }}</v-tab>
-  </v-tabs>
+  <div>
+    <div class="tabs">
+      <ul>
+        <li v-for="tab in tabs" :key="tab.id" :class="{ 'is-active': tab.id === currentTab }">
+          <a @click="currentTab = tab.id">
+            <span class="icon is-small">
+              <font-awesome-icon :icon="tab.icon"/>
+            </span>
+            <span>{{ tab.name }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <GeneralSettings v-if="currentTab === 'general'"/>
+  </div>
 </template>
 
 <style scoped>

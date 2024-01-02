@@ -1,6 +1,9 @@
 <script setup>
 import {computed} from "vue";
 import router from "@/router";
+import {useUserStore} from "@/stores/user";
+
+const userStore = useUserStore();
 
 const links = computed(() => {
   return router.getRoutes().filter(route => route.meta.nav)
@@ -16,8 +19,8 @@ const links = computed(() => {
         </figure>
       </div>
       <div class="ml-2">
-        <p class="has-text-weight-bold">Petr Bohac</p>
-        <p class="text-muted">petr.bohac@remeslovkostce.cz</p>
+        <p class="has-text-weight-bold">{{userStore.firstName}} {{userStore.lastName}}</p>
+        <p class="text-muted">{{userStore.email}}</p>
       </div>
     </div>
 

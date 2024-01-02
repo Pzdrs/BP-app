@@ -6,6 +6,8 @@ spring:
       database: es-gps
       host: localhost
       authentication-database: admin
+      username: admin
+      password: admin
 logging:
   level:
     org.springframework.security: TRACE

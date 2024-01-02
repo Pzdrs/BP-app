@@ -4,4 +4,6 @@ import cz.pycrs.bp.backend.entity.configuration.MqttConfiguration;
 
 public interface ApplicationConfigurationService {
     MqttConfiguration getMqttConfiguration();
+
+    MqttConfiguration setMqttConfiguration(MqttConfiguration mqttConfiguration);
 }

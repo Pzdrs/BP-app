@@ -1,5 +1,6 @@
 package cz.pycrs.bp.backend.service.impl;
 
+import cz.pycrs.bp.backend.entity.ApplicationConfiguration;
 import cz.pycrs.bp.backend.entity.configuration.MqttConfiguration;
 import cz.pycrs.bp.backend.repository.ApplicationConfigurationRepository;
 import cz.pycrs.bp.backend.service.ApplicationConfigurationService;
@@ -17,5 +18,12 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
                 .findById(MqttConfiguration.KEY)
                 .map(applicationConfiguration -> (MqttConfiguration) applicationConfiguration.getValue())
                 .orElse(null);
+    }
+
+    @Override
+    public MqttConfiguration setMqttConfiguration(MqttConfiguration mqttConfiguration) {
+        return (MqttConfiguration) applicationConfigurationRepository
+                .save(new ApplicationConfiguration(MqttConfiguration.KEY, mqttConfiguration))
+                .getValue();
     }
 }

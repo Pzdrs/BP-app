@@ -42,12 +42,12 @@ public class BackendApplication {
     }
 
 
-    @Bean
+/*    @Bean
     CommandLineRunner runner(UserService userService) {
         return args -> {
             System.out.println(userService.loadUserByUsername("user"));
         };
-    }
+    }*/
 
     @Bean
     @ServiceActivator(inputChannel = "inboundMqtt")

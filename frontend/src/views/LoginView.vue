@@ -1,29 +1,49 @@
 <script setup>
+import {toast} from "bulma-toast";
+import {useUserStore} from "@/stores/user";
+import {useRouter} from "vue-router";
 
+const userStore = useUserStore();
+const router = useRouter();
+
+function login(event) {
+  userStore
+      .signIn(Object.fromEntries(new FormData(event.target).entries()))
+      .then(_ => {
+        router.push({name: 'Dashboard'});
+      })
+      .catch(err => {
+        if (err.response.status === 401)
+          toast({
+            message: 'Incorrect username or password',
+            type: 'is-danger',
+            dismissible: true,
+            duration: 5000
+          });
+        else {
+          toast({
+            message: 'Failed to log in',
+            type: 'is-danger',
+            dismissible: true,
+            duration: 5000
+          });
+        }
+      });
+}
 </script>
 
 <template>
   <div class="hero is-fullheight" style="background-color: #efefef">
-    <div class="columns mt-5">
-      <div class="column is-4"></div>
-      <div class="column is-4">
-        <div class="notification">
-          <button class="delete" onclick="this.parentElement.remove()"></button>
-          msg
-        </div>
-      </div>
-      <div class="column is-4"></div>
-    </div>
     <div class="hero-body is-justify-content-center is-align-items-center">
-      <form method="post">
+      <form @submit.prevent="login">
         <div class="columns is-flex is-flex-direction-column box">
           <div class="column">
             <label class="label" for="username">Username</label>
-            <input name="username" class="input is-info" type="text" placeholder="Username">
+            <input name="username" class="input is-info" type="text" placeholder="Username" required>
           </div>
           <div class="column">
             <label class="label" for="password">Password</label>
-            <input name="password" class="input is-info" type="password" placeholder="Password">
+            <input name="password" class="input is-info" type="password" placeholder="Password" required>
             <a href="#" class="is-size-7 has-text-grey">Forgot password?</a>
           </div>
           <div class="column">

@@ -39,7 +39,7 @@ const links = computed(() => {
     <ul v-for="link in links" :key="link.name.toLowerCase()" class="menu-list">
       <li>
         <router-link :to="link.path">
-          <font-awesome-icon :icon="link.meta.icon" class="mr-2"></font-awesome-icon>
+          <i :class="link.meta.icon" class="mr-2"></i>
           {{ link.name }}
         </router-link>
       </li>

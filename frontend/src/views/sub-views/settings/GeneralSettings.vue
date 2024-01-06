@@ -1,8 +1,8 @@
 <script setup>
-import axios from "@/axios";
 import {onMounted} from "vue";
 import {toast} from "bulma-toast";
 import {useConfigurationStore} from "@/stores/configuration";
+
 
 const configurationStore = useConfigurationStore();
 
@@ -49,9 +49,9 @@ onMounted(async () => {
       <div class="field-body">
         <div class="field">
           <p class="control is-expanded has-icons-left">
-            <input name="host" class="input" type="text" placeholder="Server address">
+            <input name="host" class="input" type="text" placeholder="Server address" required>
             <span class="icon is-small is-left">
-            <font-awesome-icon icon="fa-solid fa-server"/>
+            <i class="fa-solid fa-server"></i>
           </span>
           </p>
         </div>
@@ -69,7 +69,7 @@ onMounted(async () => {
           <p class="control is-expanded has-icons-left">
             <input name="username" class="input" type="text" placeholder="Username">
             <span class="icon is-small is-left">
-            <font-awesome-icon icon="fa-solid fa-user"/>
+            <i class="fa-solid fa-user"></i>
           </span>
           </p>
         </div>
@@ -77,7 +77,7 @@ onMounted(async () => {
           <p class="control is-expanded has-icons-left">
             <input name="password" class="input" type="password" placeholder="Password">
             <span class="icon is-small is-left">
-            <font-awesome-icon icon="fa-solid fa-lock"/>
+            <i class="fa-solid fa-lock"></i>
           </span>
           </p>
         </div>

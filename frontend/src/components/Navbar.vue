@@ -1,6 +1,49 @@
 <script setup>
 
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+
+import {useUserStore} from "@/stores/user";
+import router from "@/router";
+import {toast} from "bulma-toast";
+import {onMounted} from "vue";
+import {useNotificationStore} from "@/stores/notification";
+import NotificationItem from "@/components/NotificationItem.vue";
+
+const userStore = useUserStore();
+const notificationStore = useNotificationStore();
+
+notificationStore.loadNotifications();
+
+function logout() {
+  userStore.signOut().then(_ => {
+    router.push({name: 'Login'});
+    toast({
+      message: 'Signed out successfully',
+      type: 'is-success'
+    });
+  });
+}
+
+onMounted(() => {
+  const navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+  const notificationDropdown = document.getElementById('notification-dropdown');
+
+  navbarBurgers.forEach(el => {
+    el.addEventListener('click', () => {
+      const target = el.dataset.target;
+      const $target = document.getElementById(target);
+
+      el.classList.toggle('is-active');
+      $target.classList.toggle('is-active');
+    });
+  });
+
+  notificationDropdown.addEventListener('click', () => {
+    notificationDropdown.classList.toggle('is-active');
+  });
+  notificationDropdown.addEventListener('focusout', () => {
+    notificationDropdown.classList.remove('is-active');
+  });
+})
 </script>
 
 <template>
@@ -18,11 +61,35 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
       </a>
     </div>
 
-    <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-menu">
       <div class="navbar-end">
+
         <div class="navbar-item">
-          <a href="/logout">
-            <font-awesome-icon icon="fa-right-to-bracket"/>
+          <div class="is-flex is-justify-content-end">
+            <div id="notification-dropdown" class="dropdown is-right">
+              <div class="dropdown-trigger">
+                <button class="button" aria-controls="notifications-dropdown">
+                  <span class="icon is-small">
+                    <span v-if="notificationStore.hasNotifications" class="badge is-danger">{{notificationStore.notifications.length}}</span>
+                    <i class="fas fa-bell"></i>
+                  </span>
+                </button>
+              </div>
+
+              <div class="dropdown-menu" id="notifications-dropdown" role="menu">
+                <div class="dropdown-content py-0">
+                  <div class="list has-overflow-ellipsis" style="width: 340px">
+                    <NotificationItem :notification="notification" v-for="notification in notificationStore.notifications" :key="notification.id"/>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="navbar-item">
+          <a href="#" @click.prevent="logout">
+            <i class="fas fa-right-to-bracket"></i>
           </a>
         </div>
       </div>

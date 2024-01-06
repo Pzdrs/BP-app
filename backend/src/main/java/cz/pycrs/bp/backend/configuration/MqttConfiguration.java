@@ -21,7 +21,7 @@ public class MqttConfiguration {
 
     private static final String CLIENT_ID = String.format("es-gps_server-%s", UUID.randomUUID());
 
-   /* @Bean
+    @Bean
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
@@ -29,18 +29,18 @@ public class MqttConfiguration {
         factory.setConnectionOptions(configurationService.getMqttConfiguration().apply(options));
 
         return factory;
-    }*/
+    }
 
     @Bean
-    public MessageChannel inboundMqtt() {
+    public MessageChannel inboundMqttChannel() {
         return new DirectChannel();
     }
-/*    @Bean
+    @Bean
     public MessageProducer gnssAdapter() {
         MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(
                 CLIENT_ID, mqttClientFactory(), "gnss"
         );
-        adapter.setOutputChannel(inboundMqtt());
+        adapter.setOutputChannel(inboundMqttChannel());
         return adapter;
-    }*/
+    }
 }

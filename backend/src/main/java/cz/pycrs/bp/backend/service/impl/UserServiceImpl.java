@@ -2,6 +2,7 @@ package cz.pycrs.bp.backend.service.impl;
 
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
+import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
 import cz.pycrs.bp.backend.repository.UserRepository;
 import cz.pycrs.bp.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,22 +20,25 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserProfile createUser(String username, String email, String password) {
-        User user = userRepository.save(new User(username, email, passwordEncoder.encode(password)));
+    public UserProfile createUser(UserRegistrationRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new IllegalArgumentException("User with email " + request.email() + " already exists");
+        }
+
+        User user = userRepository.save(
+                new User(
+                        request.firstName(),
+                        request.lastName(),
+                        request.email(),
+                        passwordEncoder.encode(request.password())
+                )
+        );
         return new UserProfile(user);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> byUsername = userRepository.findByUsername(username);
-        Optional<User> byEmail = userRepository.findByEmail(username);
-
-        if (byUsername.isPresent()) {
-            return byUsername.get();
-        } else if (byEmail.isPresent()) {
-            return byEmail.get();
-        } else {
-            throw new UsernameNotFoundException("User not found");
-        }
+        return userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

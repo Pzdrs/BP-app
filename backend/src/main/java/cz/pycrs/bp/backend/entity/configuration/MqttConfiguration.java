@@ -16,7 +16,7 @@ public record MqttConfiguration(
     public static final String KEY = "mqtt";
 
     public MqttConnectOptions apply(MqttConnectOptions options) {
-        options.setServerURIs(new String[]{host});
+        options.setServerURIs(new String[]{"tcp://" + host});
         if (hasCredentials()) {
             options.setUserName(username);
             options.setPassword(password.toCharArray());

@@ -44,6 +44,7 @@ public class SecurityConfiguration {
                     request.requestMatchers("/").permitAll();
                     request.requestMatchers("/config/**").permitAll();
                     request.requestMatchers("/auth/**").permitAll();
+                    request.requestMatchers("/user/register").permitAll();
                     request.anyRequest().authenticated();
                 })
                 .logout(logout -> {

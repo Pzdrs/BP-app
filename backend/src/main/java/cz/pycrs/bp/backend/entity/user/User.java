@@ -17,13 +17,14 @@ import java.util.Collection;
 public class User implements UserDetails {
     @MongoId
     private ObjectId id;
-    private String username;
+    private String firstName, lastName;
     @Indexed(unique = true)
     private String email;
     private String password;
 
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String firstName, String lastName, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
     }
@@ -40,7 +41,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

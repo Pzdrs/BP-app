@@ -1,6 +1,8 @@
 package cz.pycrs.bp.backend.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.pycrs.bp.backend.entity.user.User;
+import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
 import cz.pycrs.bp.backend.payload.LoginRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +27,7 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
         setAuthenticationSuccessHandler((request, response, authentication) -> {
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
-            response.getWriter().write(new ObjectMapper().writeValueAsString(authentication.getPrincipal()));
+            response.getWriter().write(new ObjectMapper().writeValueAsString(new UserProfile((User) authentication.getPrincipal())));
         });
         setAuthenticationFailureHandler((request, response, exception) -> {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

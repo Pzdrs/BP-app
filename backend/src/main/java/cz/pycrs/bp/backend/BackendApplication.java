@@ -3,6 +3,7 @@ package cz.pycrs.bp.backend;
 import cz.pycrs.bp.backend.entity.notification.Notification;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.handler.MqttMessageHandler;
+import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
 import cz.pycrs.bp.backend.service.DataPointService;
 import cz.pycrs.bp.backend.service.DataSourceService;
 import cz.pycrs.bp.backend.service.NotificationService;
@@ -27,10 +28,10 @@ public class BackendApplication {
         SpringApplication.run(BackendApplication.class, args);
     }
 
-   /* @Bean
+    @Bean
     public CommandLineRunner startup(NotificationService notificationService, UserService userService) {
         return args -> {
-            notificationService.sendNotification(
+            /*notificationService.sendNotification(
                     (User) userService.loadUserByUsername("admin@email.cz"),
                     new Notification(Notification.Severity.INFO,"Info notification", "This is an informative notification.")
             );
@@ -41,9 +42,10 @@ public class BackendApplication {
             notificationService.sendNotification(
                     (User) userService.loadUserByUsername("admin@email.cz"),
                     new Notification(Notification.Severity.ERROR,"Error notification", "This is an error notification.")
-            );
+            );*/
+            //userService.createUser(new UserRegistrationRequest("admin@email.cz", "admin", "Petr", "Bohac"));
         };
-    }*/
+    }
 
     @Bean
     @ServiceActivator(inputChannel = "inboundMqttChannel")

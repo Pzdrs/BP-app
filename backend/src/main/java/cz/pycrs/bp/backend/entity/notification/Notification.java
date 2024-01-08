@@ -8,7 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 
 @Document("notifications")
@@ -29,7 +30,7 @@ public class Notification {
     private Map<String, Object> metadata;
 
     @CreatedDate
-    private OffsetDateTime dateCreated;
+    private Date created;
 
     protected Notification() {
     }

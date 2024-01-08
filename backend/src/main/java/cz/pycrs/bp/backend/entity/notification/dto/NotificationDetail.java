@@ -2,6 +2,8 @@ package cz.pycrs.bp.backend.entity.notification.dto;
 
 import cz.pycrs.bp.backend.entity.notification.Notification;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Map;
 
 public record NotificationDetail(
@@ -9,7 +11,8 @@ public record NotificationDetail(
         Notification.Severity severity,
         String title,
         String message,
-        Map<String, Object> metadata
+        Map<String, Object> metadata,
+        Date created
 ) {
     public NotificationDetail(Notification notification) {
         this(
@@ -17,7 +20,8 @@ public record NotificationDetail(
                 notification.getSeverity(),
                 notification.getTitle(),
                 notification.getMessage(),
-                notification.getMetadata()
+                notification.getMetadata(),
+                notification.getCreated()
         );
     }
 }

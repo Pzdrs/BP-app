@@ -3,14 +3,11 @@ package cz.pycrs.bp.backend.entity;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.util.Date;
 
 @Document("datapoint")
 @Data
@@ -23,10 +20,7 @@ public class DataPoint {
     private double speed, course;
 
     @CreatedDate
-    private OffsetDateTime dateCreated;
-
-    @LastModifiedDate
-    private OffsetDateTime lastUpdated;
+    private Date created;
 
     public DataPoint(DataSource dataSource, double longitude, double latitude, double altitude, double speed, double course) {
         this.dataSource = dataSource;

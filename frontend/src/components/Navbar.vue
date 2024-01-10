@@ -54,14 +54,14 @@ onMounted(() => {
       </a>
 
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
-         data-target="navbarBasicExample">
+         data-target="navbar">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
     </div>
 
-    <div class="navbar-menu">
+    <div id="navbar" class="navbar-menu">
       <div class="navbar-end">
 
         <div class="navbar-item">

@@ -19,8 +19,8 @@ const links = computed(() => {
         </figure>
       </div>
       <div class="ml-2">
-        <p class="has-text-weight-bold">{{userStore.firstName}} {{userStore.lastName}}</p>
-        <p class="text-muted">{{userStore.email}}</p>
+        <p class="has-text-weight-bold">{{userStore.details.firstName}} {{userStore.details.lastName}}</p>
+        <p class="text-muted">{{userStore.details.email}}</p>
       </div>
     </div>
 

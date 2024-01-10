@@ -8,6 +8,12 @@ export const useUserStore = defineStore('user', {
     getters: {
         isAuthenticated() {
             return this.details !== null;
+        },
+        getCreatedAt() {
+            return Date.parse(this.details.created)
+        },
+        getUpdatedAt() {
+            return Date.parse(this.details.updated)
         }
     },
     actions: {

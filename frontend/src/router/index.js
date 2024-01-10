@@ -13,14 +13,14 @@ const router = createRouter({
             }
         },
         {
-            path: '',
+            path: '/',
             component: () => import('../views/LoggedInView.vue'),
             meta: {
                 signedInOnly: true
             },
             children: [
                 {
-                    path: '/',
+                    path: '',
                     name: 'Dashboard',
                     meta: {
                         nav: true,
@@ -37,9 +37,17 @@ const router = createRouter({
                     },
                     component: () => import('../views/ApplicationSettingsView.vue')
                 },
+                {
+                    path: '/users',
+                    name: 'Users',
+                    meta: {
+                        nav: true,
+                        icon: 'fas fa-user'
+                    },
+                    component: () => import('../views/UserManagementView.vue')
+                },
             ]
-        },
-
+        }
     ]
 });
 

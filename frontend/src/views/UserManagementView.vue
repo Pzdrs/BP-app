@@ -13,11 +13,11 @@ const userStore = useUserStore();
 
 const currentUser = ref({});
 
-usersStore.loadUsers().then(() => {
+usersStore.loadUsers(userStore.details.id).then(() => {
   currentUser.value = usersStore.users[0];
 });
 
-function confirmDeleteUser(user) {
+function openDeleteModal(user) {
   currentUser.value = user;
   openModal('#confirm-delete');
 }
@@ -39,9 +39,27 @@ function deleteUser() {
       });
 }
 
-function updateUser(user) {
+function openUpdateModal(user) {
   currentUser.value = user;
   openModal('#update');
+}
+
+function updateUser(event) {
+  usersStore.updateUser(currentUser.value.id, Object.fromEntries(new FormData(event.target)))
+      .then(_ => {
+        toast({
+          message: 'User updated',
+          type: 'is-success'
+        });
+        closeModalByQuery('#update');
+      })
+      .catch(_ => {
+        toast({
+          message: "Couldn't update user",
+          type: 'is-danger'
+        });
+      });
+  closeModalByQuery('#update');
 }
 
 function createUser() {
@@ -56,7 +74,7 @@ onMounted(() => setupModals());
     <p class="is-size-3">User management</p>
     <button class="button is-success" @click.prevent="createUser">
       <span class="icon is-small">
-        <i class="fas fa-plus"></i>
+        <i class="fa-solid fa-user-plus"></i>
       </span>
       <span>Add user</span>
     </button>
@@ -64,12 +82,6 @@ onMounted(() => setupModals());
   <hr class="mt-3">
   <div class="list">
     <div v-for="user in usersStore.users" :key="user.id" class="list-item" :style="user.id === userStore.details.id ? 'border-bottom: 1px solid #7a7a7a' : ''">
-      <div class="list-item-image">
-        <figure class="image is-64x64">
-          <img class="is-rounded" src="https://via.placeholder.com/128x128.png?text=Image">
-        </figure>
-      </div>
-
       <div class="list-item-content">
         <div class="list-item-title">{{ getFullName(user) }}</div>
         <div class="list-item-description">{{ user.email }}</div>
@@ -77,16 +89,16 @@ onMounted(() => setupModals());
 
       <div class="list-item-controls">
         <div class="buttons is-right">
-          <button class="button" @click.prevent="updateUser(user)">
+          <button class="button" @click.prevent="openUpdateModal(user)">
             <span class="icon is-small">
               <i class="fas fa-edit"></i>
             </span>
             <span>Edit</span>
           </button>
 
-          <button v-if="user.id !== userStore.details.id" class="button is-danger" @click.prevent="confirmDeleteUser(user)">
+          <button v-if="user.id !== userStore.details.id" class="button is-danger" @click.prevent="openDeleteModal(user)">
             <span class="icon is-small">
-              <i class="fas fa-trash"></i>
+              <i class="fa-solid fa-user-minus"></i>
             </span>
             <span>Delete</span>
           </button>
@@ -106,7 +118,38 @@ onMounted(() => setupModals());
 
   <UserModal id="update" :user="currentUser">
     <template #content>
-      <p>update form goes bree</p>
+      <form @submit.prevent="updateUser">
+        <div class="field">
+          <label class="label">First name</label>
+          <div class="control">
+            <input name="firstName" class="input" type="text" placeholder="First name" :value="currentUser.firstName">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Last name</label>
+          <div class="control">
+            <input name="lastName" class="input" type="text" placeholder="Last name" :value="currentUser.lastName">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Password</label>
+          <p class="control is-expanded has-icons-left">
+            <input name="password" class="input" type="password" placeholder="Password">
+            <span class="icon is-small is-left">
+              <i class="fas fa-lock"></i>
+            </span>
+          </p>
+        </div>
+      </form>
+    </template>
+    <template #footer>
+      <button
+          onclick="this.parentElement.previousElementSibling.querySelector('form').dispatchEvent(new Event('submit'))"
+          class="button is-info">
+        Update
+      </button>
     </template>
   </UserModal>
 

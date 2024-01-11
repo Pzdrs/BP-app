@@ -11,9 +11,15 @@ export const useUsersStore = defineStore('users', {
         }
     },
     actions: {
-        async loadUsers() {
+        async loadUsers(currentUserId) {
+            if (this.users.length > 0) return;
             const {data} = await axios.get('/user/all');
             this.users = data;
+            this.users.sort((a, b) => {
+                if (a.id === currentUserId) return -1;
+                if (b.id === currentUserId) return 1;
+                return 0;
+            });
         },
         createUser(data) {
             return axios.post('/user/register', data)
@@ -22,7 +28,11 @@ export const useUsersStore = defineStore('users', {
                 });
         },
         updateUser(id, data) {
-            return axios.patch(`/user/${id}`, data);
+            return axios.patch(`/user/${id}`, data)
+                .then(res => {
+                    const index = this.users.findIndex(user => user.id === id);
+                    this.users.splice(index, 1, res.data);
+                });
         },
         deleteUser(id) {
             return axios.delete(`/user/${id}`)

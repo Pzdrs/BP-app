@@ -38,11 +38,19 @@ const router = createRouter({
                     component: () => import('../views/ApplicationSettingsView.vue')
                 },
                 {
+                    path: '/datasources',
+                    name: 'Data sources',
+                    meta: {
+                        nav: true,
+                        icon: 'fas fa-location-dot'
+                    },
+                    component: () => import('../views/DataSourcesView.vue')
+                },{
                     path: '/users',
                     name: 'Users',
                     meta: {
                         nav: true,
-                        icon: 'fas fa-user'
+                        icon: 'fas fa-users'
                     },
                     component: () => import('../views/UserManagementView.vue')
                 },

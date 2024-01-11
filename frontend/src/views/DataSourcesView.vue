@@ -1,0 +1,219 @@
+<script setup>
+import {onMounted, ref} from "vue";
+import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
+import {toast} from "bulma-toast";
+import {useDataSourceStore} from "@/stores/datasource";
+import {getDisplayName, getRandomHexColor} from "@/utils/data_source";
+import {formatDate, toDate} from "@/utils/dates";
+import Modal from "@/components/Modal.vue";
+import DataSourceModal from "@/components/DataSourceModal.vue";
+
+const dataSourceStore = useDataSourceStore();
+
+const currentDataSource = ref({});
+
+dataSourceStore.loadDataSources().then(() => {
+  currentDataSource.value = dataSourceStore.dataSources[0];
+});
+
+function confirmDeleteDataSource(dataSource) {
+  currentDataSource.value = dataSource;
+  openModal('#confirm-delete');
+}
+
+function adoptDataSource(event) {
+  dataSourceStore.adoptDataSource(currentDataSource.value.id, Object.fromEntries(new FormData(event.target)))
+      .then(_ => {
+        toast({
+          message: 'Data source adopted',
+          type: 'is-success'
+        })
+      })
+      .catch(_ => {
+        toast({
+          message: "Couldn't adopt data source",
+          type: 'is-danger'
+        })
+      });
+  closeModalByQuery('#adopt');
+}
+
+function openAdoptModal(dataSource) {
+  currentDataSource.value = dataSource;
+  openModal('#adopt')
+  document.querySelector('input[name="color"]').value = getRandomHexColor();
+}
+
+function deleteDataSource() {
+  dataSourceStore.deleteDataSource(currentDataSource.value.id)
+      .then(_ => {
+        toast({
+          message: 'Data source deleted',
+          type: 'is-success'
+        })
+        closeModalByQuery('#confirm-delete')
+      })
+      .catch(_ => {
+        toast({
+          message: "Couldn't delete data source",
+          type: 'is-danger'
+        })
+      });
+}
+
+function openUpdateModal(dataSource) {
+  currentDataSource.value = dataSource;
+  openModal('#update');
+}
+
+function updateDataSource(event) {
+  dataSourceStore.updateDataSource(currentDataSource.value.id, Object.fromEntries(new FormData(event.target)))
+      .then(_ => {
+        toast({
+          message: 'Data source updated',
+          type: 'is-success'
+        })
+      })
+      .catch(_ => {
+        toast({
+          message: "Couldn't update data source",
+          type: 'is-danger'
+        })
+      });
+  closeModalByQuery('#update');
+}
+
+onMounted(() => setupModals());
+</script>
+
+<template>
+  <p class="is-size-3">Data sources</p>
+  <hr class="mt-3">
+
+  <article v-for="dataSource in dataSourceStore.getAdoptionAwaitingDataSources" :key="dataSource.id"
+           class="message is-link">
+    <div class="message-header">
+      <p>New device discovered - <span class="has-text-weight-normal">{{ dataSource.mac }}</span></p>
+    </div>
+    <div class="message-body">
+      <p>
+        A new device has been discovered to be sending data to the configured MQTT server.
+      </p>
+      <div class="is-flex is-justify-content-end">
+        <button class="button" @click="openAdoptModal(dataSource)">Adopt device</button>
+      </div>
+    </div>
+  </article>
+
+  <div class="list">
+    <div v-for="dataSource in dataSourceStore.getAdoptedDataSources" :key="dataSource.id" class="list-item">
+      <div class="list-item-image">
+        <div class="data-source-color-indicator" :style="`background-color: ${dataSource.color}`"></div>
+      </div>
+
+      <div class="list-item-content">
+        <div class="list-item-title">{{ getDisplayName(dataSource) }}</div>
+        <div class="list-item-description">
+          <p>{{ dataSource.mac }}</p>
+          <p>Discovered: <span>{{ formatDate(toDate(dataSource.created)) }}</span></p>
+          <p>Last modified: <span>{{ formatDate(toDate(dataSource.updated)) }}</span></p>
+        </div>
+      </div>
+
+      <div class="list-item-controls">
+        <div class="buttons is-right">
+          <button class="button" @click.prevent="openUpdateModal(dataSource)">
+            <span class="icon is-small">
+              <i class="fas fa-edit"></i>
+            </span>
+            <span>Edit</span>
+          </button>
+
+          <button class="button is-danger" @click.prevent="confirmDeleteDataSource(dataSource)">
+            <span class="icon is-small">
+              <i class="fa-solid fa-minus"></i>
+            </span>
+            <span>Delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <Modal id="adopt">
+    <template #title>
+      Adopt data source
+    </template>
+
+    <template #content>
+      <form @submit.prevent="adoptDataSource">
+        <div class="field">
+          <label class="label">Name</label>
+          <div class="control">
+            <input name="name" class="input" type="text" placeholder="Unnamed data source" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Color</label>
+          <div class="control">
+            <input name="color" class="input" type="color" placeholder="Color" required>
+          </div>
+        </div>
+      </form>
+    </template>
+
+    <template #footer>
+      <button
+          onclick="this.parentElement.previousElementSibling.querySelector('form').dispatchEvent(new Event('submit'))"
+          class="button is-info">
+        Adopt
+      </button>
+    </template>
+  </Modal>
+
+  <DataSourceModal id="confirm-delete" :data-source="currentDataSource">
+    <template #content>
+      <p>Are you sure you want to delete this data source?</p>
+    </template>
+    <template #footer>
+      <button @click="deleteDataSource" class="button is-danger">Delete</button>
+    </template>
+  </DataSourceModal>
+
+  <DataSourceModal id="update" :data-source="currentDataSource">
+    <template #content>
+      <form @submit.prevent="updateDataSource">
+        <div class="field">
+          <label class="label">Name</label>
+          <div class="control">
+            <input name="name" class="input" type="text" :value="currentDataSource.name" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Color</label>
+          <div class="control">
+            <input name="color" class="input" type="color" :value="currentDataSource.color" required>
+          </div>
+        </div>
+      </form>
+    </template>
+    <template #footer>
+      <button
+          onclick="this.parentElement.previousElementSibling.querySelector('form').dispatchEvent(new Event('submit'))"
+          class="button is-info">
+        Update
+      </button>
+    </template>
+  </DataSourceModal>
+</template>
+
+<style scoped>
+.data-source-color-indicator {
+  width: 48px;
+  height: 48px;
+  border-radius: 100%;
+  border: 1px solid #7c7c7c;
+}
+</style>

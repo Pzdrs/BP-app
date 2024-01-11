@@ -3,6 +3,7 @@ package cz.pycrs.bp.backend.service.impl;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
 import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
+import cz.pycrs.bp.backend.payload.UserUpdateRequest;
 import cz.pycrs.bp.backend.repository.UserRepository;
 import cz.pycrs.bp.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public User updateUser(String id, UserUpdateRequest request) {
+        return userRepository.findById(id).map(user -> {
+            user.setFirstName(request.firstName());
+            user.setLastName(request.lastName());
+            if (!request.password().isBlank()) user.setPassword(passwordEncoder.encode(request.password()));
+            return userRepository.save(user);
+        }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @Override

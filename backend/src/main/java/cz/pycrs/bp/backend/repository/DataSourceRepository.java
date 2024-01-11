@@ -1,7 +1,6 @@
 package cz.pycrs.bp.backend.repository;
 
-import cz.pycrs.bp.backend.entity.DataSource;
-import org.bson.types.ObjectId;
+import cz.pycrs.bp.backend.entity.datasource.DataSource;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

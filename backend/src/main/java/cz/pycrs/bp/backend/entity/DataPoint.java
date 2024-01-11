@@ -1,5 +1,6 @@
 package cz.pycrs.bp.backend.entity;
 
+import cz.pycrs.bp.backend.entity.datasource.DataSource;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;

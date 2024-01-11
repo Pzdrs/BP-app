@@ -1,4 +1,4 @@
-package cz.pycrs.bp.backend.entity;
+package cz.pycrs.bp.backend.entity.datasource;
 
 import lombok.Data;
 import org.bson.types.ObjectId;
@@ -15,8 +15,9 @@ public class DataSource {
     @MongoId
     private ObjectId id;
     private String mac;
-    private String name = null;
-    private boolean awaitingAdoption = true;
+    private String name;
+    private String color;
+    private boolean adopted = false;
 
     @CreatedDate
     private Date created;

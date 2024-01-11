@@ -3,6 +3,7 @@ package cz.pycrs.bp.backend.controller;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
 import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
+import cz.pycrs.bp.backend.payload.UserUpdateRequest;
 import cz.pycrs.bp.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,11 @@ public class UserController {
     @GetMapping("/{id}")
     public UserProfile userProfile(@PathVariable String id) {
         return new UserProfile(userService.getUser(id));
+    }
+
+    @PatchMapping("/{id}")
+    public UserProfile updateUser(@PathVariable String id, @RequestBody UserUpdateRequest request) {
+        return new UserProfile(userService.updateUser(id, request));
     }
 
     @DeleteMapping("/{id}")

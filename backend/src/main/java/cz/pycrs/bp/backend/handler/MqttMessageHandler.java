@@ -1,7 +1,7 @@
 package cz.pycrs.bp.backend.handler;
 
 import cz.pycrs.bp.backend.entity.DataPoint;
-import cz.pycrs.bp.backend.entity.DataSource;
+import cz.pycrs.bp.backend.entity.datasource.DataSource;
 import cz.pycrs.bp.backend.service.DataPointService;
 import cz.pycrs.bp.backend.service.DataSourceService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class MqttMessageHandler implements MessageHandler {
 
         DataSource dataSource = dataSourceService.getOrRegister(String.valueOf(data.get("source")));
 
-        if (dataSource.isAwaitingAdoption()) return;
+        if (!dataSource.isAdopted()) return;
 
         DataPoint dataPoint = new DataPoint(
                 dataSource,

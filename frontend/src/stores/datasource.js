@@ -3,7 +3,8 @@ import axios from "@/axios";
 
 export const useDataSourceStore = defineStore('data_source', {
     state: () => ({
-        dataSources: []
+        dataSources: [],
+        groups: []
     }),
     getters: {
         getAdoptedDataSources: (state) => {
@@ -19,11 +20,16 @@ export const useDataSourceStore = defineStore('data_source', {
             const {data} = await axios.get('/datasource/all');
             this.dataSources = data;
         },
+        async loadGroups() {
+            if (this.groups.length > 0) return;
+            const {data} = await axios.get('/datasource/groups');
+            this.groups = data;
+        },
         updateDataSource(id, data) {
             return axios.patch(`/datasource/${id}`, data)
                 .then(res => {
-                    this.dataSources = this.dataSources.filter(dataSource => dataSource.id !== id);
-                    this.dataSources.push(res.data);
+                    const index = this.dataSources.findIndex(dataSource => dataSource.id === id);
+                    this.dataSources.splice(index, 1, res.data);
                 });
         },
         deleteDataSource(id) {

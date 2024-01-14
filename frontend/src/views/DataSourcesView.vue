@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref, toRaw} from "vue";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
 import {toast} from "bulma-toast";
 import {useDataSourceStore} from "@/stores/datasource";
@@ -7,6 +7,7 @@ import {getDisplayName, getRandomHexColor} from "@/utils/data_source";
 import {formatDate, toDate} from "@/utils/dates";
 import Modal from "@/components/Modal.vue";
 import DataSourceModal from "@/components/DataSourceModal.vue";
+import BulmaTagsInput from "@creativebulma/bulma-tagsinput";
 
 const dataSourceStore = useDataSourceStore();
 
@@ -15,6 +16,15 @@ const currentDataSource = ref({});
 dataSourceStore.loadDataSources().then(() => {
   currentDataSource.value = dataSourceStore.dataSources[0];
 });
+
+dataSourceStore.loadGroups();
+
+function hasGroup(group) {
+  if (!currentDataSource.value.groups) {
+    return false;
+  }
+  return currentDataSource.value.groups.includes(group);
+}
 
 function confirmDeleteDataSource(dataSource) {
   currentDataSource.value = dataSource;
@@ -64,10 +74,15 @@ function deleteDataSource() {
 function openUpdateModal(dataSource) {
   currentDataSource.value = dataSource;
   openModal('#update');
+
 }
 
 function updateDataSource(event) {
-  dataSourceStore.updateDataSource(currentDataSource.value.id, Object.fromEntries(new FormData(event.target)))
+  const groups = [...event.target.querySelector('select').options].filter(option => option.selected).map(option => option.value);
+  const data = Object.fromEntries(new FormData(event.target));
+  data.groups = groups;
+
+  dataSourceStore.updateDataSource(currentDataSource.value.id, data)
       .then(_ => {
         toast({
           message: 'Data source updated',
@@ -83,7 +98,14 @@ function updateDataSource(event) {
   closeModalByQuery('#update');
 }
 
-onMounted(() => setupModals());
+function createNewGroup() {
+  const newGroup = document.querySelector('input#new-group').value;
+  if (newGroup.length > 0) document.querySelector('select[name="groups"]').append(new Option(newGroup, newGroup));
+}
+
+onMounted(() => {
+  setupModals();
+});
 </script>
 
 <template>
@@ -113,10 +135,15 @@ onMounted(() => setupModals());
 
       <div class="list-item-content">
         <div class="list-item-title">{{ getDisplayName(dataSource) }}</div>
-        <div class="list-item-description">
-          <p>{{ dataSource.mac }}</p>
-          <p>Discovered: <span>{{ formatDate(toDate(dataSource.created)) }}</span></p>
-          <p>Last modified: <span>{{ formatDate(toDate(dataSource.updated)) }}</span></p>
+        <div class="list-item-description is-flex is-justify-content-space-between is-align-items-center">
+          <div>
+            <p>{{ dataSource.mac }}</p>
+            <p>Discovered: <span>{{ formatDate(toDate(dataSource.created)) }}</span></p>
+            <p>Last modified: <span>{{ formatDate(toDate(dataSource.updated)) }}</span></p>
+          </div>
+          <div class="tags are-medium">
+            <span v-for="group in dataSource.groups" class="tag">{{ group }}</span>
+          </div>
         </div>
       </div>
 
@@ -195,6 +222,31 @@ onMounted(() => setupModals());
           <label class="label">Color</label>
           <div class="control">
             <input name="color" class="input" type="color" :value="currentDataSource.color" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Groups</label>
+          <div class="control">
+            <div class="select is-multiple">
+              <select name="groups" multiple>
+                <option v-for="group in dataSourceStore.groups" :key="group" :value="group" :selected="hasGroup(group)">
+                  {{ group }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="control mt-3">
+            <div class="field has-addons">
+              <p class="control">
+                <input id="new-group" class="input" type="text" placeholder="New data source group">
+              </p>
+              <p class="control">
+                <button class="button" @click.prevent="createNewGroup">
+                  Add
+                </button>
+              </p>
+            </div>
           </div>
         </div>
       </form>

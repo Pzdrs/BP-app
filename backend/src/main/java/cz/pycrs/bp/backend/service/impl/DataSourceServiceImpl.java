@@ -2,6 +2,7 @@ package cz.pycrs.bp.backend.service.impl;
 
 import cz.pycrs.bp.backend.entity.datasource.DataSource;
 import cz.pycrs.bp.backend.payload.DataSourceAdoptionRequest;
+import cz.pycrs.bp.backend.payload.DataSourceUpdateRequest;
 import cz.pycrs.bp.backend.repository.DataSourceRepository;
 import cz.pycrs.bp.backend.service.DataSourceService;
 import lombok.RequiredArgsConstructor;
@@ -50,11 +51,20 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
-    public DataSource updateDataSource(String id, DataSourceAdoptionRequest request) {
+    public DataSource updateDataSource(String id, DataSourceUpdateRequest request) {
         return dataSourceRepository.findById(id).map(dataSource -> {
             dataSource.setName(request.name());
             dataSource.setColor(request.color());
+            dataSource.setGroups(request.groups());
             return dataSourceRepository.save(dataSource);
         }).orElseThrow(() -> new RuntimeException("Data source not found"));
+    }
+
+    @Override
+    public List<String> getUniqueGroups() {
+        return dataSourceRepository.findAll()
+                .stream()
+                .flatMap(dataSource -> dataSource.getGroups().stream())
+                .distinct().toList();
     }
 }

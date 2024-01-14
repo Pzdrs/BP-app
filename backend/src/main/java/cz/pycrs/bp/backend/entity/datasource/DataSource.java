@@ -7,7 +7,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Document("datasource")
 @Data
@@ -18,6 +21,7 @@ public class DataSource {
     private String name;
     private String color;
     private boolean adopted = false;
+    private List<String> groups = new ArrayList<>();
 
     @CreatedDate
     private Date created;

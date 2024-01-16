@@ -2,6 +2,7 @@ package cz.pycrs.bp.backend.entity.notification;
 
 import cz.pycrs.bp.backend.entity.user.User;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 @Document("notifications")
 @Data
+@NoArgsConstructor
 public class Notification {
     public enum Severity {
         INFO, WARNING, ERROR
@@ -31,9 +33,6 @@ public class Notification {
 
     @CreatedDate
     private Date created;
-
-    protected Notification() {
-    }
 
     public Notification(Severity severity, String title, String message, Map<String, Object> metadata) {
         this.severity = severity;

@@ -1,5 +1,6 @@
 package cz.pycrs.bp.backend.service;
 
+import cz.pycrs.bp.backend.entity.user.Role;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
 import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
@@ -14,6 +15,8 @@ public interface UserService extends UserDetailsService {
     User getUser(String id);
 
     List<User> getAllUsers();
+
+    List<Role> getAllRoles();
 
     void deleteUser(String id);
 

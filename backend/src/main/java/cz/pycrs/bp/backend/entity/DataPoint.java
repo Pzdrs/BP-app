@@ -2,6 +2,7 @@ package cz.pycrs.bp.backend.entity;
 
 import cz.pycrs.bp.backend.entity.datasource.DataSource;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +13,7 @@ import java.util.Date;
 
 @Document("datapoint")
 @Data
+@NoArgsConstructor
 public class DataPoint {
     @MongoId
     private ObjectId id;

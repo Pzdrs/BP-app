@@ -1,5 +1,6 @@
 package cz.pycrs.bp.backend.service.impl;
 
+import cz.pycrs.bp.backend.entity.user.Role;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
 import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
@@ -32,7 +33,8 @@ public class UserServiceImpl implements UserService {
                         request.firstName(),
                         request.lastName(),
                         request.email(),
-                        passwordEncoder.encode(request.password())
+                        passwordEncoder.encode(request.password()),
+                        request.role() == null ? Role.getDefault() : request.role()
                 )
         );
     }
@@ -48,6 +50,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<Role> getAllRoles() {
+        return List.of(Role.values());
+    }
+
+    @Override
     public void deleteUser(String id) {
         userRepository.deleteById(id);
     }
@@ -58,6 +65,7 @@ public class UserServiceImpl implements UserService {
             user.setFirstName(request.firstName());
             user.setLastName(request.lastName());
             if (!request.password().isBlank()) user.setPassword(passwordEncoder.encode(request.password()));
+            user.setRole(request.role());
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }

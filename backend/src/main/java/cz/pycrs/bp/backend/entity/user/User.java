@@ -1,6 +1,7 @@
 package cz.pycrs.bp.backend.entity.user;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,9 +16,11 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Set;
 
 @Document("users")
 @Data
+@NoArgsConstructor
 public class User implements UserDetails {
     @MongoId
     private ObjectId id;
@@ -25,6 +28,8 @@ public class User implements UserDetails {
     @Indexed(unique = true)
     private String email;
     private String password;
+
+    private Role role = Role.USER;
 
     @CreatedDate
     private Date created;
@@ -39,9 +44,14 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public User(String firstName, String lastName, String email, String password, Role role) {
+        this(firstName, lastName, email, password);
+        this.role = role;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.NO_AUTHORITIES;
+        return role.getAuthorities();
     }
 
     @Override

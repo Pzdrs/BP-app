@@ -1,5 +1,6 @@
 package cz.pycrs.bp.backend.controller;
 
+import cz.pycrs.bp.backend.entity.user.Role;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
 import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
@@ -26,7 +27,7 @@ public class UserController {
         return userService
                 .getAllUsers()
                 .stream()
-                .sorted((u1,u2) -> {
+                .sorted((u1, u2) -> {
                     String authenticatedId = ((User) authentication.getPrincipal()).getId().toString();
                     if (u1.getId().toString().equals(authenticatedId)) {
                         return -1;
@@ -37,6 +38,11 @@ public class UserController {
                     return u1.getLastName().compareTo(u2.getLastName());
                 })
                 .map(UserProfile::new).toList();
+    }
+
+    @GetMapping("/roles")
+    public List<Role> allRoles() {
+        return userService.getAllRoles();
     }
 
     @GetMapping("/{id}")

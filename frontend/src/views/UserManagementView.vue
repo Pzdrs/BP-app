@@ -7,6 +7,8 @@ import UserModal from "@/components/UserModal.vue";
 import UserRegistrationModal from "@/components/UserRegistrationModal.vue";
 import {toast} from "bulma-toast";
 import {useUserStore} from "@/stores/user";
+import UserRoleTag from "@/components/UserRoleTag.vue";
+import UserUpdateModal from "@/components/UserUpdateModal.vue";
 
 const usersStore = useUsersStore();
 const userStore = useUserStore();
@@ -44,24 +46,6 @@ function openUpdateModal(user) {
   openModal('#update');
 }
 
-function updateUser(event) {
-  usersStore.updateUser(currentUser.value.id, Object.fromEntries(new FormData(event.target)))
-      .then(_ => {
-        toast({
-          message: 'User updated',
-          type: 'is-success'
-        });
-        closeModalByQuery('#update');
-      })
-      .catch(_ => {
-        toast({
-          message: "Couldn't update user",
-          type: 'is-danger'
-        });
-      });
-  closeModalByQuery('#update');
-}
-
 function createUser() {
   openModal('#create');
 }
@@ -81,9 +65,13 @@ onMounted(() => setupModals());
   </div>
   <hr class="mt-3">
   <div class="list">
-    <div v-for="user in usersStore.users" :key="user.id" class="list-item" :style="user.id === userStore.details.id ? 'border-bottom: 1px solid #7a7a7a' : ''">
+    <div v-for="user in usersStore.users" :key="user.id" class="list-item"
+         :style="user.id === userStore.details.id ? 'border-bottom: 1px solid #7a7a7a' : ''">
       <div class="list-item-content">
-        <div class="list-item-title">{{ getFullName(user) }}</div>
+        <div class="list-item-title">
+          {{ getFullName(user) }}
+          <UserRoleTag :user="user"/>
+        </div>
         <div class="list-item-description">{{ user.email }}</div>
       </div>
 
@@ -96,7 +84,8 @@ onMounted(() => setupModals());
             <span>Edit</span>
           </button>
 
-          <button v-if="user.id !== userStore.details.id" class="button is-danger" @click.prevent="openDeleteModal(user)">
+          <button v-if="user.id !== userStore.details.id" class="button is-danger"
+                  @click.prevent="openDeleteModal(user)">
             <span class="icon is-small">
               <i class="fa-solid fa-user-minus"></i>
             </span>
@@ -116,42 +105,7 @@ onMounted(() => setupModals());
     </template>
   </UserModal>
 
-  <UserModal id="update" :user="currentUser">
-    <template #content>
-      <form @submit.prevent="updateUser">
-        <div class="field">
-          <label class="label">First name</label>
-          <div class="control">
-            <input name="firstName" class="input" type="text" placeholder="First name" :value="currentUser.firstName">
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">Last name</label>
-          <div class="control">
-            <input name="lastName" class="input" type="text" placeholder="Last name" :value="currentUser.lastName">
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">Password</label>
-          <p class="control is-expanded has-icons-left">
-            <input name="password" class="input" type="password" placeholder="Password">
-            <span class="icon is-small is-left">
-              <i class="fas fa-lock"></i>
-            </span>
-          </p>
-        </div>
-      </form>
-    </template>
-    <template #footer>
-      <button
-          onclick="this.parentElement.previousElementSibling.querySelector('form').dispatchEvent(new Event('submit'))"
-          class="button is-info">
-        Update
-      </button>
-    </template>
-  </UserModal>
+  <UserUpdateModal id="update" :user="currentUser"/>
 
   <UserRegistrationModal/>
 </template>

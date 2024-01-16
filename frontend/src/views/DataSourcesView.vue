@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, ref, toRaw} from "vue";
+import {onMounted, ref} from "vue";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
 import {toast} from "bulma-toast";
 import {useDataSourceStore} from "@/stores/datasource";
@@ -7,7 +7,6 @@ import {getDisplayName, getRandomHexColor} from "@/utils/data_source";
 import {formatDate, toDate} from "@/utils/dates";
 import Modal from "@/components/Modal.vue";
 import DataSourceModal from "@/components/DataSourceModal.vue";
-import BulmaTagsInput from "@creativebulma/bulma-tagsinput";
 
 const dataSourceStore = useDataSourceStore();
 

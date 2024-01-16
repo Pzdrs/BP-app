@@ -13,6 +13,7 @@ defineProps({
 });
 
 import {getFullName} from "@/utils/user";
+import UserRoleTag from "@/components/UserRoleTag.vue";
 </script>
 
 <template>
@@ -20,6 +21,7 @@ import {getFullName} from "@/utils/user";
     <template #title>
       {{ getFullName(user) }}
       <span class="has-text-grey is-size-6">{{ user.email }}</span>
+      <UserRoleTag v-if="user.role" :user="user" class="ml-2"/>
     </template>
     <template #content>
       <slot name="content"></slot>

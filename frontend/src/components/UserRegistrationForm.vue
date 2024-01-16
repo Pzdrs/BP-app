@@ -27,7 +27,8 @@ function submit(event) {
           message: 'User created',
           type: 'is-success'
         })
-        closeModalByQuery('#create')
+        closeModalByQuery('#create');
+        event.target.reset();
       })
       .catch(_ => {
         toast({
@@ -39,7 +40,7 @@ function submit(event) {
 }
 
 function checkPasswordMatch() {
-  const password = document.querySelector("input[name='password']").value;
+  const password = document.querySelector("input#register[name='password']").value;
   const confirmPassword = document.querySelector("input#confirm-password").value;
   passwordsMatch.value = password === confirmPassword;
 }
@@ -76,12 +77,22 @@ function checkPasswordMatch() {
       <p v-if="emailIsInvalid" class="help is-danger">This email is invalid</p>
     </div>
 
+    <div class="field">
+      <label class="label">Role</label>
+      <div class="select">
+        <select name="role">
+          <option v-for="role in usersStore.roles" :key="role" :value="role">{{ role }}</option>
+        </select>
+      </div>
+    </div>
+
     <label class="label">Password</label>
     <div class="field is-horizontal">
       <div class="field-body">
         <div class="field">
           <p class="control is-expanded has-icons-left">
-            <input @input="checkPasswordMatch" name="password" class="input" type="password" placeholder="Password"
+            <input id="register" @input="checkPasswordMatch" name="password" class="input" type="password"
+                   placeholder="Password"
                    required>
             <span class="icon is-small is-left">
               <i class="fas fa-lock"></i>

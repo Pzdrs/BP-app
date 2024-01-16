@@ -3,7 +3,8 @@ import axios from "@/axios";
 
 export const useUsersStore = defineStore('users', {
     state: () => ({
-        users: []
+        users: [],
+        roles: []
     }),
     getters: {
         getUser: (state) => (id) => {
@@ -20,6 +21,12 @@ export const useUsersStore = defineStore('users', {
                 if (b.id === currentUserId) return 1;
                 return 0;
             });
+            await this.loadRoles();
+        },
+        async loadRoles() {
+            if (this.roles.length > 0) return;
+            const {data} = await axios.get('/user/roles');
+            this.roles = data;
         },
         createUser(data) {
             return axios.post('/user/register', data)

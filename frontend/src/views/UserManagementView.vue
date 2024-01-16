@@ -4,14 +4,15 @@ import {onMounted, ref} from "vue";
 import {getFullName} from "@/utils/user";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
 import UserModal from "@/components/UserModal.vue";
-import UserRegistrationModal from "@/components/UserRegistrationModal.vue";
-import {toast} from "bulma-toast";
+import UserRegistrationModal from "@/components/modal/UserRegistrationModal.vue";
 import {useUserStore} from "@/stores/user";
 import UserRoleTag from "@/components/UserRoleTag.vue";
-import UserUpdateModal from "@/components/UserUpdateModal.vue";
+import UserUpdateModal from "@/components/modal/UserUpdateModal.vue";
+import {useToast} from "vue-toast-notification";
 
 const usersStore = useUsersStore();
 const userStore = useUserStore();
+const $toast = useToast({position: 'top-right'});
 
 const currentUser = ref({});
 
@@ -27,17 +28,11 @@ function openDeleteModal(user) {
 function deleteUser() {
   usersStore.deleteUser(currentUser.value.id)
       .then(_ => {
-        toast({
-          message: 'User deleted',
-          type: 'is-success'
-        })
+        $toast.success('User deleted');
         closeModalByQuery('#confirm-delete')
       })
       .catch(_ => {
-        toast({
-          message: "Couldn't delete user",
-          type: 'is-danger'
-        })
+        $toast.error('Failed to delete user');
       });
 }
 

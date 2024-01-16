@@ -1,31 +1,23 @@
 <script setup>
 import {onMounted} from "vue";
-import {toast} from "bulma-toast";
 import {useConfigurationStore} from "@/stores/configuration";
+import {useToast} from "vue-toast-notification";
 
 
 const configurationStore = useConfigurationStore();
+const $toast = useToast({position: 'top-right'});
 
 
 function submitMqtt(event) {
   configurationStore
       .updateMqttConfig(Object.fromEntries(new FormData(event.target).entries()))
       .then(_ => {
-        toast({
-          message: 'MQTT settings updated',
-          type: 'is-success',
-          dismissible: true,
-        });
+        $toast.success('MQTT settings updated');
       })
       .catch(err => {
         const errors = err.response.data;
         const message = Object.keys(errors).map(key => `- ${key} ${errors[key]}`).join('\n');
-        toast({
-          message: 'Failed to update MQTT settings\n\n' + message,
-          type: 'is-danger',
-          dismissible: true,
-          duration: 5000
-        });
+        $toast.error('Failed to update MQTT settings\n\n' + message);
       });
 }
 

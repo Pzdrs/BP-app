@@ -1,32 +1,24 @@
 <script setup>
-import {toast} from "bulma-toast";
 import {useUserStore} from "@/stores/user";
 import {useRouter} from "vue-router";
+import {useToast} from "vue-toast-notification";
 
 const userStore = useUserStore();
 const router = useRouter();
+const $toast = useToast({position: 'top-right'});
 
 function login(event) {
   userStore
       .signIn(Object.fromEntries(new FormData(event.target).entries()))
       .then(_ => {
         router.push({name: 'Dashboard'});
+        $toast.success('Logged in successfully');
       })
       .catch(err => {
         if (err.response.status === 401)
-          toast({
-            message: 'Incorrect username or password',
-            type: 'is-danger',
-            dismissible: true,
-            duration: 5000
-          });
+          $toast.error('Incorrect username or password');
         else {
-          toast({
-            message: 'Failed to log in',
-            type: 'is-danger',
-            dismissible: true,
-            duration: 5000
-          });
+          $toast.error('Failed to log in')
         }
       });
 }

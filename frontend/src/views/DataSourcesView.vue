@@ -1,14 +1,15 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
-import {toast} from "bulma-toast";
 import {useDataSourceStore} from "@/stores/datasource";
 import {getDisplayName, getRandomHexColor} from "@/utils/data_source";
 import {formatDate, toDate} from "@/utils/dates";
 import Modal from "@/components/Modal.vue";
-import DataSourceModal from "@/components/DataSourceModal.vue";
+import DataSourceModal from "@/components/modal/DataSourceModal.vue";
+import {useToast} from "vue-toast-notification";
 
 const dataSourceStore = useDataSourceStore();
+const $toast = useToast({position: 'top-right'});
 
 const currentDataSource = ref({});
 
@@ -33,16 +34,10 @@ function confirmDeleteDataSource(dataSource) {
 function adoptDataSource(event) {
   dataSourceStore.adoptDataSource(currentDataSource.value.id, Object.fromEntries(new FormData(event.target)))
       .then(_ => {
-        toast({
-          message: 'Data source adopted',
-          type: 'is-success'
-        })
+        $toast.success('Data source adopted');
       })
       .catch(_ => {
-        toast({
-          message: "Couldn't adopt data source",
-          type: 'is-danger'
-        })
+        $toast.error('Failed to adopt data source');
       });
   closeModalByQuery('#adopt');
 }
@@ -56,17 +51,11 @@ function openAdoptModal(dataSource) {
 function deleteDataSource() {
   dataSourceStore.deleteDataSource(currentDataSource.value.id)
       .then(_ => {
-        toast({
-          message: 'Data source deleted',
-          type: 'is-success'
-        })
+        $toast.success('Data source deleted');
         closeModalByQuery('#confirm-delete')
       })
       .catch(_ => {
-        toast({
-          message: "Couldn't delete data source",
-          type: 'is-danger'
-        })
+        $toast.error('Failed to delete data source');
       });
 }
 
@@ -83,16 +72,10 @@ function updateDataSource(event) {
 
   dataSourceStore.updateDataSource(currentDataSource.value.id, data)
       .then(_ => {
-        toast({
-          message: 'Data source updated',
-          type: 'is-success'
-        })
+        $toast.success('Data source updated');
       })
       .catch(_ => {
-        toast({
-          message: "Couldn't update data source",
-          type: 'is-danger'
-        })
+        $toast.error('Failed to update data source');
       });
   closeModalByQuery('#update');
 }

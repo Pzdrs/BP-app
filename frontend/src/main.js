@@ -10,11 +10,16 @@ import '@creativebulma/bulma-badge/dist/bulma-badge.min.css'
 import 'bulma-list/css/bulma-list.css'
 
 import {createPinia} from "pinia";
+import ToastPlugin from "vue-toast-notification";
+import 'vue-toast-notification/dist/theme-sugar.css'
 
 
 const app = createApp(App);
 
 app.use(createPinia());
 app.use(router);
+app.use(ToastPlugin, {
+    position: 'top',
+});
 
 app.mount('#app');

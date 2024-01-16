@@ -3,23 +3,21 @@
 
 import {useUserStore} from "@/stores/user";
 import router from "@/router";
-import {toast} from "bulma-toast";
 import {onMounted} from "vue";
 import {useNotificationStore} from "@/stores/notification";
 import NotificationItem from "@/components/NotificationItem.vue";
+import {useToast} from "vue-toast-notification";
 
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
+const $toast = useToast({position: 'top-right'});
 
 notificationStore.loadNotifications();
 
 function logout() {
   userStore.signOut().then(_ => {
     router.push({name: 'Login'});
-    toast({
-      message: 'Signed out successfully',
-      type: 'is-success'
-    });
+    $toast.success('Logged out')
   });
 }
 

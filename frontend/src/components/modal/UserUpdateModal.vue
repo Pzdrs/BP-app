@@ -1,11 +1,11 @@
 <script setup>
 import UserModal from "@/components/UserModal.vue";
-import {toast} from "bulma-toast";
 import {closeModalByQuery} from "@/utils/modal";
 import {useUsersStore} from "@/stores/users";
+import {useToast} from "vue-toast-notification";
 
 const usersStore = useUsersStore();
-
+const $toast = useToast({position: 'top-right'});
 
 const props = defineProps({
   id: {
@@ -21,17 +21,11 @@ const props = defineProps({
 function updateUser(event) {
   usersStore.updateUser(props.user.id, Object.fromEntries(new FormData(event.target)))
       .then(_ => {
-        toast({
-          message: 'User updated',
-          type: 'is-success'
-        });
+        $toast.success('User updated');
         closeModalByQuery('#update');
       })
       .catch(_ => {
-        toast({
-          message: "Couldn't update user",
-          type: 'is-danger'
-        });
+        $toast.error('Failed to update user');
       });
   closeModalByQuery('#update');
 }

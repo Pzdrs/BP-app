@@ -2,12 +2,14 @@
 import {ref} from "vue";
 import {useUsersStore} from "@/stores/users";
 import {closeModalByQuery} from "@/utils/modal";
-import {toast} from "bulma-toast";
+import {useToast} from "vue-toast-notification";
 
 const usersStore = useUsersStore();
 
 const passwordsMatch = ref(true);
 const emailIsInvalid = ref(false);
+
+const $toast = useToast({position: 'top-right'});
 
 function submit(event) {
   if (!passwordsMatch.value) {
@@ -23,18 +25,12 @@ function submit(event) {
 
   usersStore.createUser(Object.fromEntries(new FormData(event.target)))
       .then(_ => {
-        toast({
-          message: 'User created',
-          type: 'is-success'
-        })
+        $toast.success('User created')
         closeModalByQuery('#create');
         event.target.reset();
       })
       .catch(_ => {
-        toast({
-          message: "Couldn't create user",
-          type: 'is-danger'
-        })
+        $toast.error("Failed to create user")
       });
 
 }

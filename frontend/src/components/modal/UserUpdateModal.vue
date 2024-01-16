@@ -1,5 +1,5 @@
 <script setup>
-import UserModal from "@/components/UserModal.vue";
+import UserModal from "@/components/modal/UserModal.vue";
 import {closeModalByQuery} from "@/utils/modal";
 import {useUsersStore} from "@/stores/users";
 import {useToast} from "vue-toast-notification";

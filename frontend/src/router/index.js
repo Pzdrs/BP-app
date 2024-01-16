@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import {useUserStore} from "@/stores/user";
+import PageNotFoundView from "@/views/PageNotFoundView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,14 +10,14 @@ const router = createRouter({
             name: 'Login',
             component: () => import('../views/LoginView.vue'),
             meta: {
-                anonymousOnly: true
+                unauthenticatedOnly: true
             }
         },
         {
             path: '/',
-            component: () => import('../views/LoggedInView.vue'),
+            component: () => import('../components/layout/AuthenticatedBaseLayout.vue'),
             meta: {
-                signedInOnly: true
+                authenticatedOnly: true
             },
             children: [
                 {
@@ -24,7 +25,8 @@ const router = createRouter({
                     name: 'Dashboard',
                     meta: {
                         nav: true,
-                        icon: 'fas fa-table-columns'
+                        icon: 'fas fa-table-columns',
+                        rolesAny: ['ADMINISTRATOR', 'USER']
                     },
                     component: () => import('../views/MapView.vue')
                 },
@@ -33,7 +35,8 @@ const router = createRouter({
                     name: 'Settings',
                     meta: {
                         nav: true,
-                        icon: 'fas fa-cog'
+                        icon: 'fas fa-cog',
+                        rolesAny: ['ADMINISTRATOR']
                     },
                     component: () => import('../views/ApplicationSettingsView.vue')
                 },
@@ -42,20 +45,23 @@ const router = createRouter({
                     name: 'Data sources',
                     meta: {
                         nav: true,
-                        icon: 'fas fa-location-dot'
+                        icon: 'fas fa-location-dot',
+                        rolesAny: ['ADMINISTRATOR']
                     },
                     component: () => import('../views/DataSourcesView.vue')
-                },{
+                }, {
                     path: '/users',
                     name: 'Users',
                     meta: {
                         nav: true,
-                        icon: 'fas fa-users'
+                        icon: 'fas fa-users',
+                        rolesAny: ['ADMINISTRATOR']
                     },
                     component: () => import('../views/UserManagementView.vue')
                 },
             ]
-        }
+        },
+        {path: '/:pathMatch(.*)*', component: PageNotFoundView},
     ]
 });
 
@@ -64,22 +70,25 @@ router.beforeEach(async (to, from, next) => {
 
     await userStore.ensureAuthentication();
 
-    // Set page title
-    document.title = `${to.name || 'Welcome'} | ES-GPS`;
-
     if (userStore.isAuthenticated) {
-        if (to.meta && to.meta.anonymousOnly) {
+        if (to.meta.unauthenticatedOnly) {
+            next(from);
+            return;
+        }
+
+        if (to.meta.rolesAny && !userStore.hasAnyRole(to.meta.rolesAny)) {
             next(from);
             return;
         }
     } else {
-        if (to.meta && to.meta.signedInOnly) {
+        if (to.meta.authenticatedOnly) {
             next('/login');
             return;
         }
     }
 
     next();
+    document.title = `${to.name || 'Welcome'} | ES-GPS`;
 });
 
 export default router

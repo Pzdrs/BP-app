@@ -1,6 +1,6 @@
 <script setup>
 
-import Modal from "@/components/Modal.vue";
+import Modal from "@/components/modal/Modal.vue";
 import UserRegistrationForm from "@/components/UserRegistrationForm.vue";
 
 </script>

@@ -14,6 +14,14 @@ export const useUserStore = defineStore('user', {
         },
         getUpdatedAt() {
             return Date.parse(this.details.updated)
+        },
+        hasAnyRole: (state) => (roles) => {
+            if (state.details === null) return false;
+            return roles.some(role => role === state.details.role);
+        },
+        hasViewPermission: (state) => (route) => {
+            if (state.details === null) return false;
+            return !(route.meta.rolesAny && !route.meta.rolesAny.includes(state.details.role));
         }
     },
     actions: {

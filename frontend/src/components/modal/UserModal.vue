@@ -1,5 +1,5 @@
 <script setup>
-import Modal from "@/components/Modal.vue";
+import Modal from "@/components/modal/Modal.vue";
 
 defineProps({
   id: {

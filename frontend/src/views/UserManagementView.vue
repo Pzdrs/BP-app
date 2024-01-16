@@ -3,7 +3,7 @@ import {useUsersStore} from "@/stores/users";
 import {onMounted, ref} from "vue";
 import {getFullName} from "@/utils/user";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
-import UserModal from "@/components/UserModal.vue";
+import UserModal from "@/components/modal/UserModal.vue";
 import UserRegistrationModal from "@/components/modal/UserRegistrationModal.vue";
 import {useUserStore} from "@/stores/user";
 import UserRoleTag from "@/components/UserRoleTag.vue";

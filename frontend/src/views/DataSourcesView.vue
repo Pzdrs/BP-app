@@ -4,7 +4,7 @@ import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
 import {useDataSourceStore} from "@/stores/datasource";
 import {getDisplayName, getRandomHexColor} from "@/utils/data_source";
 import {formatDate, toDate} from "@/utils/dates";
-import Modal from "@/components/Modal.vue";
+import Modal from "@/components/modal/Modal.vue";
 import DataSourceModal from "@/components/modal/DataSourceModal.vue";
 import {useToast} from "vue-toast-notification";
 

@@ -6,7 +6,9 @@ import {useUserStore} from "@/stores/user";
 const userStore = useUserStore();
 
 const links = computed(() => {
-  return router.getRoutes().filter(route => route.meta.nav)
+  return router.getRoutes()
+      .filter(route => route.meta.nav)
+      .filter(userStore.hasViewPermission)
 });
 </script>
 
@@ -19,8 +21,8 @@ const links = computed(() => {
         </figure>
       </div>
       <div class="ml-2">
-        <p class="has-text-weight-bold">{{userStore.details.firstName}} {{userStore.details.lastName}}</p>
-        <p class="text-muted">{{userStore.details.email}}</p>
+        <p class="has-text-weight-bold">{{ userStore.details.firstName }} {{ userStore.details.lastName }}</p>
+        <p class="text-muted">{{ userStore.details.email }}</p>
       </div>
     </div>
 

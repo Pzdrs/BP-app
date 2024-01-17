@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia'
-import axios from "@/axios";
+import notificationService from "@/services/notification.service";
 
 export const useNotificationStore = defineStore('notification', {
     state: () => ({
@@ -12,16 +12,13 @@ export const useNotificationStore = defineStore('notification', {
     },
     actions: {
         async loadNotifications() {
-            const {data} = await axios.get('/notification');
-            this.notifications = data;
+            this.notifications = await notificationService.getAll();
         },
         listenForNotifications() {
-            new EventSource('/notification/live').addEventListener('message', (e) => {
-                console.log(e)
-            });
+            const eventSource = notificationService.listen();
         },
         dismissNotification(id) {
-            return axios.delete(`/notification/${id}`);
+            return notificationService.dismiss(id);
         }
     }
 })

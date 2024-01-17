@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import {useUserStore} from "@/stores/user";
+import {useAuthStore} from "@/stores/auth";
 import PageNotFoundView from "@/views/PageNotFoundView.vue";
 
 const router = createRouter({
@@ -66,17 +66,17 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    const userStore = useUserStore();
+    const authStore = useAuthStore();
 
-    await userStore.ensureAuthentication();
+    await authStore.fetchProfile();
 
-    if (userStore.isAuthenticated) {
+    if (authStore.isAuthenticated) {
         if (to.meta.unauthenticatedOnly) {
             next(from);
             return;
         }
 
-        if (to.meta.rolesAny && !userStore.hasAnyRole(to.meta.rolesAny)) {
+        if (to.meta.rolesAny && !authStore.hasAnyRole(to.meta.rolesAny)) {
             next(from);
             return;
         }

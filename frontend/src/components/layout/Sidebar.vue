@@ -1,14 +1,14 @@
 <script setup>
 import {computed} from "vue";
 import router from "@/router";
-import {useUserStore} from "@/stores/user";
+import {useAuthStore} from "@/stores/auth";
 
-const userStore = useUserStore();
+const authStore = useAuthStore();
 
 const links = computed(() => {
   return router.getRoutes()
       .filter(route => route.meta.nav)
-      .filter(userStore.hasViewPermission)
+      .filter(authStore.hasViewPermission)
 });
 </script>
 
@@ -21,8 +21,8 @@ const links = computed(() => {
         </figure>
       </div>
       <div class="ml-2">
-        <p class="has-text-weight-bold">{{ userStore.details.firstName }} {{ userStore.details.lastName }}</p>
-        <p class="text-muted">{{ userStore.details.email }}</p>
+        <p class="has-text-weight-bold">{{ authStore.details.firstName }} {{ authStore.details.lastName }}</p>
+        <p class="text-muted">{{ authStore.details.email }}</p>
       </div>
     </div>
 

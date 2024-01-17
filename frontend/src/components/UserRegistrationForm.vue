@@ -1,10 +1,10 @@
 <script setup>
 import {ref} from "vue";
-import {useUsersStore} from "@/stores/users";
+import {useUserStore} from "@/stores/user";
 import {closeModalByQuery} from "@/utils/modal";
 import {useToast} from "vue-toast-notification";
 
-const usersStore = useUsersStore();
+const userStore = useUserStore();
 
 const passwordsMatch = ref(true);
 const emailIsInvalid = ref(false);
@@ -23,7 +23,7 @@ function submit(event) {
     return;
   }
 
-  usersStore.createUser(Object.fromEntries(new FormData(event.target)))
+  userStore.createUser(Object.fromEntries(new FormData(event.target)))
       .then(_ => {
         $toast.success('User created')
         closeModalByQuery('#create');
@@ -77,7 +77,7 @@ function checkPasswordMatch() {
       <label class="label">Role</label>
       <div class="select">
         <select name="role">
-          <option v-for="role in usersStore.roles" :key="role" :value="role">{{ role }}</option>
+          <option v-for="role in userStore.roles" :key="role" :value="role">{{ role }}</option>
         </select>
       </div>
     </div>

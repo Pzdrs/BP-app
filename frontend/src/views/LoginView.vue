@@ -1,14 +1,14 @@
 <script setup>
-import {useUserStore} from "@/stores/user";
+import {useAuthStore} from "@/stores/auth";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toast-notification";
 
-const userStore = useUserStore();
+const authStore = useAuthStore();
 const router = useRouter();
 const $toast = useToast({position: 'top-right'});
 
 function login(event) {
-  userStore
+  authStore
       .signIn(Object.fromEntries(new FormData(event.target).entries()))
       .then(_ => {
         router.push({name: 'Dashboard'});

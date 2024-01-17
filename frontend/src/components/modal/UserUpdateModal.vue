@@ -1,10 +1,10 @@
 <script setup>
 import UserModal from "@/components/modal/UserModal.vue";
 import {closeModalByQuery} from "@/utils/modal";
-import {useUsersStore} from "@/stores/users";
+import {useUserStore} from "@/stores/user";
 import {useToast} from "vue-toast-notification";
 
-const usersStore = useUsersStore();
+const userStore = useUserStore();
 const $toast = useToast({position: 'top-right'});
 
 const props = defineProps({
@@ -19,7 +19,7 @@ const props = defineProps({
 });
 
 function updateUser(event) {
-  usersStore.updateUser(props.user.id, Object.fromEntries(new FormData(event.target)))
+  userStore.updateUser(props.user.id, Object.fromEntries(new FormData(event.target)))
       .then(_ => {
         $toast.success('User updated');
         closeModalByQuery('#update');
@@ -53,7 +53,7 @@ function updateUser(event) {
           <label class="label">Role</label>
           <div class="select">
             <select name="role">
-              <option v-for="role in usersStore.roles" :key="role" :value="role" :selected="user.role===role">
+              <option v-for="role in userStore.roles" :key="role" :value="role" :selected="user.role===role">
                 {{ role }}
               </option>
             </select>

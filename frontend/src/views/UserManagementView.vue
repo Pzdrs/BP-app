@@ -1,23 +1,23 @@
 <script setup>
-import {useUsersStore} from "@/stores/users";
+import {useUserStore} from "@/stores/user";
 import {onMounted, ref} from "vue";
 import {getFullName} from "@/utils/user";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
 import UserModal from "@/components/modal/UserModal.vue";
 import UserRegistrationModal from "@/components/modal/UserRegistrationModal.vue";
-import {useUserStore} from "@/stores/user";
+import {useAuthStore} from "@/stores/auth";
 import UserRoleTag from "@/components/UserRoleTag.vue";
 import UserUpdateModal from "@/components/modal/UserUpdateModal.vue";
 import {useToast} from "vue-toast-notification";
 
-const usersStore = useUsersStore();
 const userStore = useUserStore();
+const authStore = useAuthStore();
 const $toast = useToast({position: 'top-right'});
 
 const currentUser = ref({});
 
-usersStore.loadUsers(userStore.details.id).then(() => {
-  currentUser.value = usersStore.users[0];
+userStore.loadUsers(authStore.details.id).then(() => {
+  currentUser.value = userStore.users[0];
 });
 
 function openDeleteModal(user) {
@@ -26,7 +26,7 @@ function openDeleteModal(user) {
 }
 
 function deleteUser() {
-  usersStore.deleteUser(currentUser.value.id)
+  userStore.deleteUser(currentUser.value.id)
       .then(_ => {
         $toast.success('User deleted');
         closeModalByQuery('#confirm-delete')
@@ -60,8 +60,8 @@ onMounted(() => setupModals());
   </div>
   <hr class="mt-3">
   <div class="list">
-    <div v-for="user in usersStore.users" :key="user.id" class="list-item"
-         :style="user.id === userStore.details.id ? 'border-bottom: 1px solid #7a7a7a' : ''">
+    <div v-for="user in userStore.users" :key="user.id" class="list-item"
+         :style="user.id === authStore.details.id ? 'border-bottom: 1px solid #7a7a7a' : ''">
       <div class="list-item-content">
         <div class="list-item-title">
           {{ getFullName(user) }}
@@ -79,7 +79,7 @@ onMounted(() => setupModals());
             <span>Edit</span>
           </button>
 
-          <button v-if="user.id !== userStore.details.id" class="button is-danger"
+          <button v-if="user.id !== authStore.details.id" class="button is-danger"
                   @click.prevent="openDeleteModal(user)">
             <span class="icon is-small">
               <i class="fa-solid fa-user-minus"></i>

@@ -8,7 +8,7 @@ const configurationStore = useConfigurationStore();
 const $toast = useToast({position: 'top-right'});
 
 
-function submitMqtt(event) {
+const submitMqtt = (event) => {
   configurationStore
       .updateMqttConfig(Object.fromEntries(new FormData(event.target).entries()))
       .then(_ => {
@@ -21,15 +21,15 @@ function submitMqtt(event) {
       });
 }
 
-onMounted(async () => {
-  await configurationStore.loadMqttConfig();
-
-  const form = document.querySelector('form#mqtt');
-  Object.keys(configurationStore.mqtt).forEach(key => {
-    const input = form.querySelector(`input[name="${key}"]`);
-    if (input) {
-      input.value = configurationStore.mqtt[key];
-    }
+onMounted(() => {
+  configurationStore.loadMqttConfig().then(_ => {
+    const form = document.querySelector('form#mqtt');
+    Object.keys(configurationStore.mqtt).forEach(key => {
+      const input = form.querySelector(`input[name="${key}"]`);
+      if (input) {
+        input.value = configurationStore.mqtt[key];
+      }
+    });
   });
 });
 </script>

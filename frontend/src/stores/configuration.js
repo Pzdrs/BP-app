@@ -1,22 +1,19 @@
 import {defineStore} from 'pinia'
-import axios from "@/axios";
+import configurationService from "@/services/configuration.service";
 
 export const useConfigurationStore = defineStore('configuration', {
     state: () => ({
-        mqtt: {
-            host: null,
-            port: null,
-            username: null,
-            password: null,
-        }
+        mqtt: {}
     }),
     actions: {
         async loadMqttConfig() {
-            const response = await axios.get('/config/mqtt');
-            this.mqtt = response.data;
+            this.mqtt = await configurationService.getMqtt();
         },
-        updateMqttConfig(data) {
-            return axios.post('/config/mqtt', data);
+        async updateMqttConfig(data) {
+            return await configurationService.updateMqtt(data)
+                .then(res => {
+                    this.mqtt = res.data;
+                });
         }
     }
 })

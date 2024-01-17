@@ -1,21 +1,21 @@
 <script setup>
 
 
-import {useUserStore} from "@/stores/user";
+import {useAuthStore} from "@/stores/auth";
 import router from "@/router";
 import {onMounted} from "vue";
 import {useNotificationStore} from "@/stores/notification";
 import NotificationItem from "@/components/NotificationItem.vue";
 import {useToast} from "vue-toast-notification";
 
-const userStore = useUserStore();
+const authStore = useAuthStore();
 const notificationStore = useNotificationStore();
 const $toast = useToast({position: 'top-right'});
 
 notificationStore.loadNotifications();
 
 function logout() {
-  userStore.signOut().then(_ => {
+  authStore.signOut().then(_ => {
     router.push({name: 'Login'});
     $toast.success('Logged out')
   });

@@ -1,55 +1,48 @@
 import {defineStore} from 'pinia'
-import axios from "@/axios";
+import userService from "@/services/user.service";
 
 export const useUserStore = defineStore('user', {
     state: () => ({
-        details: null
+        users: [],
+        roles: []
     }),
     getters: {
-        isAuthenticated() {
-            return this.details !== null;
-        },
-        getCreatedAt() {
-            return Date.parse(this.details.created)
-        },
-        getUpdatedAt() {
-            return Date.parse(this.details.updated)
-        },
-        hasAnyRole: (state) => (roles) => {
-            if (state.details === null) return false;
-            return roles.some(role => role === state.details.role);
-        },
-        hasViewPermission: (state) => (route) => {
-            if (state.details === null) return false;
-            return !(route.meta.rolesAny && !route.meta.rolesAny.includes(state.details.role));
+        getUser: (state) => (id) => {
+            return state.users.find(user => user.id === id);
         }
     },
     actions: {
-        async ensureAuthentication() {
-            if (this.details === null) {
-                try {
-                    const response = await axios.get('/user/me');
-                    this.details = response.data;
-                } catch (e) {
-                }
-            }
+        async loadUsers(currentUserId) {
+            if (this.users.length > 0) return;
+            this.users = await userService.getAll();
+            this.users.sort((a, b) => {
+                if (a.id === currentUserId) return -1;
+                if (b.id === currentUserId) return 1;
+                return 0;
+            });
+            await this.loadRoles();
         },
-        signIn(data) {
-            return axios.post('/auth/login', data)
-                .then(response => {
-                    this.details = response.data;
-                })
-                .catch(error => {
-                    throw error;
+        async loadRoles() {
+            if (this.roles.length > 0) return;
+            this.roles = await userService.getRoles();
+        },
+        async createUser(data) {
+            return await userService.create(data)
+                .then(res => {
+                    this.users.push(res.data);
                 });
         },
-        signOut() {
-            return axios.post('/auth/logout')
-                .then(() => {
-                    this.details = null;
-                })
-                .catch(error => {
-                    throw error;
+        async updateUser(id, data) {
+            return await userService.update(id, data)
+                .then(res => {
+                    const index = this.users.findIndex(user => user.id === id);
+                    this.users.splice(index, 1, res.data);
+                });
+        },
+        async deleteUser(id) {
+            return await userService.delete(id)
+                .then(_ => {
+                    this.users = this.users.filter(user => user.id !== id);
                 });
         }
     }

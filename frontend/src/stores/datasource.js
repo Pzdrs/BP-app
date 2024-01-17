@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia'
-import axios from "@/axios";
+import datasourceService from "@/services/datasource.service";
 
 export const useDataSourceStore = defineStore('data_source', {
     state: () => ({
@@ -17,29 +17,27 @@ export const useDataSourceStore = defineStore('data_source', {
     actions: {
         async loadDataSources() {
             if (this.dataSources.length > 0) return;
-            const {data} = await axios.get('/datasource/all');
-            this.dataSources = data;
+            this.dataSources = await datasourceService.getAll();
         },
         async loadGroups() {
             if (this.groups.length > 0) return;
-            const {data} = await axios.get('/datasource/groups');
-            this.groups = data;
+            this.groups = await datasourceService.getGroups();
         },
         updateDataSource(id, data) {
-            return axios.patch(`/datasource/${id}`, data)
+            return datasourceService.update(id, data)
                 .then(res => {
                     const index = this.dataSources.findIndex(dataSource => dataSource.id === id);
                     this.dataSources.splice(index, 1, res.data);
                 });
         },
         deleteDataSource(id) {
-            return axios.delete(`/datasource/${id}`)
+            return datasourceService.delete(id)
                 .then(_ => {
                     this.dataSources = this.dataSources.filter(dataSource => dataSource.id !== id);
                 });
         },
         adoptDataSource(id, data) {
-            return axios.post(`/datasource/${id}/adopt`, data)
+            return datasourceService.adopt(id, data)
                 .then(res => {
                     this.dataSources = this.dataSources.filter(dataSource => dataSource.id !== id);
                     this.dataSources.push(res.data);

@@ -33,8 +33,8 @@ const links = computed(() => {
         </figure>
       </div>
       <div class="ml-2">
-        <p class="has-text-weight-bold">Petr Bohac</p>
-        <p class="text-muted">petr.bohac@remeslovkostce.cz</p>
+        <p class="has-text-weight-bold">{{ authStore.getFullName }}</p>
+        <p class="text-muted">{{ authStore.details.email }}</p>
       </div>
     </div>
     <hr class="my-2">

@@ -12,8 +12,6 @@ const authStore = useAuthStore();
 const notificationStore = useNotificationStore();
 const $toast = useToast({position: 'top-right'});
 
-notificationStore.loadNotifications();
-
 function logout() {
   authStore.signOut().then(_ => {
     router.push({name: 'Login'});

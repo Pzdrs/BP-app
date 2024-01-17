@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia'
 import authService from "@/services/auth.service";
+import {getFullName} from "@/utils/user";
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -22,6 +23,9 @@ export const useAuthStore = defineStore('auth', {
         hasViewPermission: (state) => (route) => {
             if (state.details === null) return false;
             return !(route.meta.rolesAny && !route.meta.rolesAny.includes(state.details.role));
+        },
+        getFullName: (state) => {
+            return getFullName(state.details);
         }
     },
     actions: {

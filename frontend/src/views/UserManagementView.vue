@@ -49,60 +49,62 @@ onMounted(() => setupModals());
 </script>
 
 <template>
-  <div class="is-flex is-justify-content-space-between is-align-items-center">
-    <p class="is-size-3">User management</p>
-    <button class="button is-success" @click.prevent="createUser">
+  <template v-if="authStore.isAuthenticated">
+    <div class="is-flex is-justify-content-space-between is-align-items-center">
+      <p class="is-size-3">User management</p>
+      <button class="button is-success" @click.prevent="createUser">
       <span class="icon is-small">
         <i class="fa-solid fa-user-plus"></i>
       </span>
-      <span>Add user</span>
-    </button>
-  </div>
-  <hr class="mt-3">
-  <div class="list">
-    <div v-for="user in userStore.users" :key="user.id" class="list-item"
-         :style="user.id === authStore.details.id ? 'border-bottom: 1px solid #7a7a7a' : ''">
-      <div class="list-item-content">
-        <div class="list-item-title">
-          {{ getFullName(user) }}
-          <UserRoleTag :user="user"/>
+        <span>Add user</span>
+      </button>
+    </div>
+    <hr class="mt-3">
+    <div class="list">
+      <div v-for="user in userStore.users" :key="user.id" class="list-item"
+           :style="user.id === authStore.details.id ? 'border-bottom: 1px solid #7a7a7a' : ''">
+        <div class="list-item-content">
+          <div class="list-item-title">
+            {{ getFullName(user) }}
+            <UserRoleTag :user="user"/>
+          </div>
+          <div class="list-item-description">{{ user.email }}</div>
         </div>
-        <div class="list-item-description">{{ user.email }}</div>
-      </div>
 
-      <div class="list-item-controls">
-        <div class="buttons is-right">
-          <button class="button" @click.prevent="openUpdateModal(user)">
+        <div class="list-item-controls">
+          <div class="buttons is-right">
+            <button class="button" @click.prevent="openUpdateModal(user)">
             <span class="icon is-small">
               <i class="fas fa-edit"></i>
             </span>
-            <span>Edit</span>
-          </button>
+              <span>Edit</span>
+            </button>
 
-          <button v-if="user.id !== authStore.details.id" class="button is-danger"
-                  @click.prevent="openDeleteModal(user)">
+            <button v-if="user.id !== authStore.details.id" class="button is-danger"
+                    @click.prevent="openDeleteModal(user)">
             <span class="icon is-small">
               <i class="fa-solid fa-user-minus"></i>
             </span>
-            <span>Delete</span>
-          </button>
+              <span>Delete</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <UserModal id="confirm-delete" :user="currentUser">
-    <template #content>
-      <p>Are you sure you want to delete this user?</p>
-    </template>
-    <template #footer>
-      <button @click="deleteUser" class="button is-danger">Delete</button>
-    </template>
-  </UserModal>
+    <UserModal id="confirm-delete" :user="currentUser">
+      <template #content>
+        <p>Are you sure you want to delete this user?</p>
+      </template>
+      <template #footer>
+        <button @click="deleteUser" class="button is-danger">Delete</button>
+      </template>
+    </UserModal>
 
-  <UserUpdateModal id="update" :user="currentUser"/>
+    <UserUpdateModal id="update" :user="currentUser"/>
 
-  <UserRegistrationModal/>
+    <UserRegistrationModal/>
+  </template>
 </template>
 
 <style scoped>

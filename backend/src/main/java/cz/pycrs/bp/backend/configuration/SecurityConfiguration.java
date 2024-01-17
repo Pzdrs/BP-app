@@ -41,11 +41,7 @@ public class SecurityConfiguration {
                     });
                 })
                 .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/").permitAll();
-                    request.requestMatchers("/config/**").permitAll();
-                    request.requestMatchers("/auth/**").permitAll();
-                    request.requestMatchers("/user/register").permitAll();
-                    request.anyRequest().authenticated();
+                    request.anyRequest().permitAll();
                 })
                 .logout(logout -> {
                     logout.logoutUrl("/auth/logout");

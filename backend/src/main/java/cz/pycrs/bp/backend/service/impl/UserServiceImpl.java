@@ -8,9 +8,14 @@ import cz.pycrs.bp.backend.payload.UserUpdateRequest;
 import cz.pycrs.bp.backend.repository.UserRepository;
 import cz.pycrs.bp.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,13 +65,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(String id, UserUpdateRequest request) {
+    public User updateUser(String id, UserUpdateRequest request, Authentication authentication) {
         return userRepository.findById(id).map(user -> {
             user.setFirstName(request.firstName());
             user.setLastName(request.lastName());
             if (!request.password().isBlank()) user.setPassword(passwordEncoder.encode(request.password()));
             user.setRole(request.role());
-            return userRepository.save(user);
+            User updatedUser = userRepository.save(user);
+
+            // If the updated user is the currently authenticated user, update the principal in the security context
+            if (((User) authentication.getPrincipal()).getId().equals(updatedUser.getId())) {
+                SecurityContextHolder.getContext().setAuthentication(
+                        new PreAuthenticatedAuthenticationToken(updatedUser, null, updatedUser.getAuthorities())
+                );
+            }
+            return updatedUser;
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 

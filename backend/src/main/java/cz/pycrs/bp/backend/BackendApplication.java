@@ -1,9 +1,6 @@
 package cz.pycrs.bp.backend;
 
-import cz.pycrs.bp.backend.entity.notification.Notification;
-import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.handler.MqttMessageHandler;
-import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
 import cz.pycrs.bp.backend.service.DataPointService;
 import cz.pycrs.bp.backend.service.DataSourceService;
 import cz.pycrs.bp.backend.service.NotificationService;

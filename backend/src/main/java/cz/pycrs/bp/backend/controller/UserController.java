@@ -51,8 +51,8 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public UserProfile updateUser(@PathVariable String id, @RequestBody UserUpdateRequest request) {
-        return new UserProfile(userService.updateUser(id, request));
+    public UserProfile updateUser(@PathVariable String id, @RequestBody UserUpdateRequest request, Authentication authentication) {
+        return new UserProfile(userService.updateUser(id, request, authentication));
     }
 
     @DeleteMapping("/{id}")

@@ -5,6 +5,7 @@ import cz.pycrs.bp.backend.payload.DataSourceAdoptionRequest;
 import cz.pycrs.bp.backend.payload.DataSourceUpdateRequest;
 import cz.pycrs.bp.backend.repository.DataSourceRepository;
 import cz.pycrs.bp.backend.service.DataSourceService;
+import cz.pycrs.bp.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DataSourceServiceImpl implements DataSourceService {
     private final DataSourceRepository dataSourceRepository;
+    private final NotificationService notificationService;
 
     @Override
     public DataSource getOrRegister(String mac) {

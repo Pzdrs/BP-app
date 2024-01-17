@@ -1,5 +1,7 @@
 import {defineStore} from 'pinia'
 import userService from "@/services/user.service";
+import {useAuthStore} from "@/stores/auth";
+
 
 export const useUserStore = defineStore('user', {
     state: () => ({
@@ -33,10 +35,14 @@ export const useUserStore = defineStore('user', {
                 });
         },
         async updateUser(id, data) {
+            const authStore = useAuthStore();
             return await userService.update(id, data)
                 .then(res => {
                     const index = this.users.findIndex(user => user.id === id);
                     this.users.splice(index, 1, res.data);
+
+                    // Update authStore if the current user is updated
+                    if (id === authStore.details.id) authStore.details = res.data;
                 });
         },
         async deleteUser(id) {

@@ -58,7 +58,16 @@ const router = createRouter({
                         rolesAny: ['ADMINISTRATOR']
                     },
                     component: () => import('../views/UserManagementView.vue')
-                },
+                }, {
+                    path: '/profile',
+                    name: 'My profile',
+                    meta: {
+                        nav: true,
+                        icon: 'fas fa-user',
+                        rolesAny: ['USER', 'ADMINISTRATOR']
+                    },
+                    component: () => import('../views/ProfileView.vue')
+                }
             ]
         },
         {path: '/:pathMatch(.*)*', component: PageNotFoundView},

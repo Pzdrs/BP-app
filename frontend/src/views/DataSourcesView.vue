@@ -91,7 +91,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <p class="is-size-3">Data sources</p>
+  <p class="is-size-3">Data source management</p>
   <hr class="mt-3">
 
   <article v-for="dataSource in dataSourceStore.getAdoptionAwaitingDataSources" :key="dataSource.id"

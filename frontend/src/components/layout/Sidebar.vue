@@ -38,8 +38,8 @@ const links = computed(() => {
       </div>
     </div>
     <hr class="my-2">
-    <ul v-for="link in links" :key="link.name.toLowerCase()" class="menu-list">
-      <li>
+    <ul class="menu-list">
+      <li v-for="link in links" :key="link.name.toLowerCase()">
         <router-link :to="link.path">
           <i :class="link.meta.icon" class="mr-2"></i>
           {{ link.name }}

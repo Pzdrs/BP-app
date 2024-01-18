@@ -1,5 +1,5 @@
 <script setup>
-import {useAuthStore} from "@/stores/auth";
+import {useAuthStore} from "@/stores/auth.store";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toast-notification";
 

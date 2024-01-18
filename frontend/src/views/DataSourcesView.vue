@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
-import {useDataSourceStore} from "@/stores/datasource";
+import {useDataSourceStore} from "@/stores/datasource.store";
 import {getDisplayName, getRandomHexColor} from "@/utils/data_source";
 import {formatDate, toDate} from "@/utils/dates";
 import Modal from "@/components/modal/Modal.vue";

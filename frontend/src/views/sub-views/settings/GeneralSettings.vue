@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted} from "vue";
-import {useConfigurationStore} from "@/stores/configuration";
+import {useConfigurationStore} from "@/stores/configuration.store";
 import {useToast} from "vue-toast-notification";
 
 

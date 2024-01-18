@@ -1,7 +1,7 @@
 <script setup>
 import UserModal from "@/components/modal/UserModal.vue";
 import {closeModalByQuery} from "@/utils/modal";
-import {useUserStore} from "@/stores/user";
+import {useUserStore} from "@/stores/user.store";
 import {useToast} from "vue-toast-notification";
 
 const userStore = useUserStore();

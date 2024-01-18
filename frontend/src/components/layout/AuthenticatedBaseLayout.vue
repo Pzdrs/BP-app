@@ -1,8 +1,8 @@
 <script setup>
 import Sidebar from "@/components/layout/Sidebar.vue";
 import Navbar from "@/components/layout/Navbar.vue";
-import {useAuthStore} from "@/stores/auth";
-import {useNotificationStore} from "@/stores/notification";
+import {useAuthStore} from "@/stores/auth.store";
+import {useNotificationStore} from "@/stores/notification.store";
 
 const authStore = useAuthStore();
 const notificationStore = useNotificationStore();

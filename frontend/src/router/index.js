@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import {useAuthStore} from "@/stores/auth";
+import {useAuthStore} from "@/stores/auth.store.store";
 import PageNotFoundView from "@/views/PageNotFoundView.vue";
 
 const router = createRouter({

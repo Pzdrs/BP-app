@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import {useUserStore} from "@/stores/user";
+import {useUserStore} from "@/stores/user.store";
 import {closeModalByQuery} from "@/utils/modal";
 import {useToast} from "vue-toast-notification";
 

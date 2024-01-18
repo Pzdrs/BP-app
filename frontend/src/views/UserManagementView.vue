@@ -1,11 +1,11 @@
 <script setup>
-import {useUserStore} from "@/stores/user";
+import {useUserStore} from "@/stores/user.store";
 import {onMounted, ref} from "vue";
 import {getFullName} from "@/utils/user";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
 import UserModal from "@/components/modal/UserModal.vue";
 import UserRegistrationModal from "@/components/modal/UserRegistrationModal.vue";
-import {useAuthStore} from "@/stores/auth";
+import {useAuthStore} from "@/stores/auth.store";
 import UserRoleTag from "@/components/UserRoleTag.vue";
 import UserUpdateModal from "@/components/modal/UserUpdateModal.vue";
 import {useToast} from "vue-toast-notification";

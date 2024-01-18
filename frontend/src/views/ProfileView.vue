@@ -1,6 +1,6 @@
 <script setup>
-import {useAuthStore} from "@/stores/auth";
-import {useUserStore} from "@/stores/user";
+import {useAuthStore} from "@/stores/auth.store";
+import {useUserStore} from "@/stores/user.store";
 import {useToast} from "vue-toast-notification";
 
 const authStore = useAuthStore();

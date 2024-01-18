@@ -1,10 +1,10 @@
 <script setup>
 
 
-import {useAuthStore} from "@/stores/auth";
+import {useAuthStore} from "@/stores/auth.store";
 import router from "@/router";
 import {onMounted} from "vue";
-import {useNotificationStore} from "@/stores/notification";
+import {useNotificationStore} from "@/stores/notification.store";
 import NotificationItem from "@/components/NotificationItem.vue";
 import {useToast} from "vue-toast-notification";
 

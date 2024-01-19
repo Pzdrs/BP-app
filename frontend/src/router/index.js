@@ -97,7 +97,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
     next();
-    document.title = `${to.name || 'Welcome'} | ES-GPS`;
+    document.title = `ES GPS | ${to.name || 'Welcome'}`;
 });
 
 export default router

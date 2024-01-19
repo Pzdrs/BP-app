@@ -46,9 +46,9 @@ onMounted(() => {
 <template>
   <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="/public">
-        ESGPS
-      </a>
+      <RouterLink to="/" class="navbar-item">
+        <img src="/logo.svg" alt="Logo">
+      </RouterLink>
 
       <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
          data-target="navbar">

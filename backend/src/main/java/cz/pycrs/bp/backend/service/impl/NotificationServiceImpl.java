@@ -3,7 +3,9 @@ package cz.pycrs.bp.backend.service.impl;
 import cz.pycrs.bp.backend.entity.notification.Notification;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.repository.NotificationRepository;
+import cz.pycrs.bp.backend.repository.UserRepository;
 import cz.pycrs.bp.backend.service.NotificationService;
+import cz.pycrs.bp.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final Map<String, SseEmitter> userEmitters = new HashMap<>();
 
     private final NotificationRepository notificationRepository;
+    private final UserService userService;
 
     @Override
     public List<Notification> getUserNotifications(User user) {
@@ -29,7 +32,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void addNotificationEmittor(Authentication authentication, SseEmitter emitter) {
+    public void addNotificationEmitter(Authentication authentication, SseEmitter emitter) {
         User user = (User) authentication.getPrincipal();
 
         userEmitters.put(user.getId().toString(), emitter);
@@ -38,16 +41,31 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void sendNotification(User user, Notification notification) throws IOException {
+    public void sendNotification(User user, Notification notification) {
         notification.setUser(user);
-        notificationRepository.save(notification);
-        userEmitters.get(user.getId().toString()).send(notification);
+        notification = notificationRepository.save(notification);
+        try {
+            SseEmitter sseEmitter = userEmitters.get(user.getId().toString());
+            if (sseEmitter != null) sseEmitter.send(notification);
+        } catch (IOException e) {
+            throw new RuntimeException(String.format("Failed to send notification to user %s", user.getId()), e);
+        }
     }
 
     @Override
-    public void sendNotifications(User user, Notification... notification) throws IOException {
+    public void sendNotifications(User user, Notification... notification) {
         for (Notification n : notification) {
             sendNotification(user, n);
         }
+    }
+
+    @Override
+    public void notifyAdministrators(Notification... notifications) {
+        userService.getAllAdministrators().forEach(user -> sendNotifications(user, notifications));
+    }
+
+    @Override
+    public void dismissNotification(String id) {
+        notificationRepository.deleteById(id);
     }
 }

@@ -1,6 +1,7 @@
 package cz.pycrs.bp.backend.service.impl;
 
 import cz.pycrs.bp.backend.entity.datasource.DataSource;
+import cz.pycrs.bp.backend.entity.notification.Notification;
 import cz.pycrs.bp.backend.payload.DataSourceAdoptionRequest;
 import cz.pycrs.bp.backend.payload.DataSourceUpdateRequest;
 import cz.pycrs.bp.backend.repository.DataSourceRepository;
@@ -9,7 +10,9 @@ import cz.pycrs.bp.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,6 +27,14 @@ public class DataSourceServiceImpl implements DataSourceService {
                 .findByMac(mac)
                 .orElseGet(() -> {
                     System.out.println("Registering a new data source: " + mac);
+                    notificationService.notifyAdministrators(
+                            new Notification(
+                                    Notification.Severity.INFO,
+                                    "New data source discovered",
+                                    String.format("A new data source with MAC address %s has been discovered.", mac),
+                                    Map.of("actions", Map.of("resolveUrl", "/data-sources"))
+                            )
+                    );
                     return dataSourceRepository.save(new DataSource(mac));
                 });
     }

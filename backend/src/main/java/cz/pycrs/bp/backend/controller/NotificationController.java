@@ -6,9 +6,7 @@ import cz.pycrs.bp.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
@@ -22,7 +20,7 @@ public class NotificationController {
     @GetMapping(value = "/live", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter liveNotifications(Authentication authentication) {
         SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        notificationService.addNotificationEmittor(authentication, emitter);
+        notificationService.addNotificationEmitter(authentication, emitter);
         return emitter;
     }
 
@@ -31,5 +29,10 @@ public class NotificationController {
         return notificationService
                 .getUserNotifications((User) authentication.getPrincipal())
                 .stream().map(NotificationDetail::new).toList();
+    }
+
+    @DeleteMapping("/{id}")
+    public void dismissNotification(@PathVariable String id) {
+        notificationService.dismissNotification(id);
     }
 }

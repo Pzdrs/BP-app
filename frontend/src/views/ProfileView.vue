@@ -24,6 +24,13 @@ function updateUser(event) {
 
   <form @submit.prevent="updateUser">
     <div class="field">
+      <label class="label">Email</label>
+      <div class="control">
+        <input class="input" type="text" :value="authStore.details.email" disabled>
+      </div>
+    </div>
+
+    <div class="field">
       <label class="label">First name</label>
       <div class="control">
         <input name="firstName" class="input" type="text" placeholder="First name" :value="authStore.details.firstName">
@@ -36,7 +43,7 @@ function updateUser(event) {
         <input name="lastName" class="input" type="text" placeholder="Last name" :value="authStore.details.lastName">
       </div>
     </div>
-
+    
     <div class="field">
       <label class="label">Role</label>
       <div class="select">

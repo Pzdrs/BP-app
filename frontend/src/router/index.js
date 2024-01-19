@@ -41,7 +41,7 @@ const router = createRouter({
                     component: () => import('../views/ApplicationSettingsView.vue')
                 },
                 {
-                    path: '/datasources',
+                    path: '/data-sources',
                     name: 'Data sources',
                     meta: {
                         nav: true,

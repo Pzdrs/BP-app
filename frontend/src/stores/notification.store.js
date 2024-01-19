@@ -16,9 +16,15 @@ export const useNotificationStore = defineStore('notification', {
         },
         listenForNotifications() {
             const eventSource = notificationService.listen();
+            eventSource.addEventListener('message', (e) => {
+                this.notifications.push(JSON.parse(e.data));
+            });
         },
         dismissNotification(id) {
-            return notificationService.dismiss(id);
+            return notificationService.dismiss(id)
+                .then(_ => {
+                    this.notifications = this.notifications.filter(notification => notification.id !== id);
+                });
         }
     }
 })

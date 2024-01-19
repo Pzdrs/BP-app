@@ -6,11 +6,7 @@ export default {
         return res?.data ?? [];
     },
     listen: () => {
-        const eventSource = new EventSource('/notification/live');
-        eventSource.addEventListener('message', (e) => {
-            console.log(e)
-        });
-        return eventSource;
+        return new EventSource('http://localhost:8080/notification/live', {withCredentials: true});
     },
     dismiss: async (id) => {
         return await axios.delete(`/notification/${id}`);

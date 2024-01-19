@@ -37,7 +37,8 @@ onMounted(() => {
     notificationDropdown.classList.toggle('is-active');
   });
   notificationDropdown.addEventListener('focusout', () => {
-    notificationDropdown.classList.remove('is-active');
+    // A timeout is needed, or the links don't work. Don't know why, don't care.
+    setTimeout(() => notificationDropdown.classList.remove('is-active'),100)
   });
 })
 </script>
@@ -59,14 +60,14 @@ onMounted(() => {
 
     <div id="navbar" class="navbar-menu">
       <div class="navbar-end">
-
         <div class="navbar-item">
           <div class="is-flex is-justify-content-end">
             <div id="notification-dropdown" class="dropdown is-right">
               <div class="dropdown-trigger">
                 <button class="button" aria-controls="notifications-dropdown">
                   <span class="icon is-small">
-                    <span v-if="notificationStore.hasNotifications" class="badge is-danger">{{notificationStore.notifications.length}}</span>
+                    <span v-if="notificationStore.hasNotifications"
+                          class="badge is-danger">{{ notificationStore.notifications.length }}</span>
                     <i class="fas fa-bell"></i>
                   </span>
                 </button>
@@ -74,8 +75,9 @@ onMounted(() => {
 
               <div class="dropdown-menu" id="notifications-dropdown" role="menu">
                 <div class="dropdown-content py-0">
-                  <div class="list has-overflow-ellipsis" style="width: 340px">
-                    <NotificationItem :notification="notification" v-for="notification in notificationStore.notifications" :key="notification.id"/>
+                  <div class="list" style="width: 340px">
+                    <NotificationItem :notification="notification"
+                                      v-for="notification in notificationStore.notifications" :key="notification.id"/>
                   </div>
                 </div>
               </div>

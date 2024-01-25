@@ -17,6 +17,7 @@ public class ApplicationConfigurationController {
         return applicationConfigurationService.getMqttConfiguration();
     }
 
+
     @PostMapping("/mqtt")
     public MqttConfiguration setMqttConfiguration(@Valid @RequestBody MqttConfiguration mqttConfiguration) {
         return applicationConfigurationService.setMqttConfiguration(mqttConfiguration);

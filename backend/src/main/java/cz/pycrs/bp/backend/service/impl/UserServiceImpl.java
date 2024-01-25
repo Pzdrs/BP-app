@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
             user.setFirstName(request.firstName());
             user.setLastName(request.lastName());
             if (!request.password().isBlank()) user.setPassword(passwordEncoder.encode(request.password()));
-            user.setRole(request.role());
+            if (request.role() != null) user.setRole(request.role());
             User updatedUser = userRepository.save(user);
 
             // If the updated user is the currently authenticated user, update the principal in the security context

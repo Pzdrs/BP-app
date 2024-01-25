@@ -19,9 +19,7 @@ public class NotificationController {
 
     @GetMapping(value = "/live", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter liveNotifications(Authentication authentication) {
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        notificationService.addNotificationEmitter(authentication, emitter);
-        return emitter;
+        return notificationService.createEmitter((User) authentication.getPrincipal());
     }
 
     @GetMapping

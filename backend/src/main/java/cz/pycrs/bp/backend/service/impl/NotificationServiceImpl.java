@@ -32,12 +32,12 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void addNotificationEmitter(Authentication authentication, SseEmitter emitter) {
-        User user = (User) authentication.getPrincipal();
-
+    public SseEmitter createEmitter(User user) {
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         userEmitters.put(user.getId().toString(), emitter);
         emitter.onCompletion(() -> userEmitters.remove(user.getId().toString()));
         emitter.onTimeout(() -> userEmitters.remove(user.getId().toString()));
+        return emitter;
     }
 
     @Override

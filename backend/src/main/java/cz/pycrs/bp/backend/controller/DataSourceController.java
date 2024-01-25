@@ -1,10 +1,12 @@
 package cz.pycrs.bp.backend.controller;
 
 import cz.pycrs.bp.backend.entity.datasource.dto.DataSourceDetail;
+import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.payload.DataSourceAdoptionRequest;
 import cz.pycrs.bp.backend.payload.DataSourceUpdateRequest;
 import cz.pycrs.bp.backend.service.DataSourceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +18,9 @@ public class DataSourceController {
     private final DataSourceService dataSourceService;
 
     @GetMapping("/all")
-    public List<DataSourceDetail> allUsers() {
-        return dataSourceService.getAllDataSources().stream().map(DataSourceDetail::new).toList();
+    public List<DataSourceDetail> allUsers(Authentication authentication) {
+        return dataSourceService.getAllDataSourcesForUser(((User) authentication.getPrincipal()))
+                .stream().map(DataSourceDetail::new).toList();
     }
 
     @PostMapping("/{id}/adopt")

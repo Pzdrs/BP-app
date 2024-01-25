@@ -31,6 +31,9 @@ public class User implements UserDetails {
 
     private Role role = Role.USER;
 
+    // Can contain either group names or the ids of data sources
+    private Set<String> dataSources = Set.of();
+
     @CreatedDate
     private Date created;
 

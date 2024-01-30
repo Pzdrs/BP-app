@@ -6,8 +6,9 @@ import cz.pycrs.bp.backend.repository.NotificationRepository;
 import cz.pycrs.bp.backend.service.NotificationService;
 import cz.pycrs.bp.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.core.log.LogMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -19,7 +20,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
-    private final Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
+    private static final Log logger = LogFactory.getLog(NotificationServiceImpl.class);
 
     private final Map<String, SseEmitter> userEmitters = new HashMap<>();
 
@@ -48,7 +49,7 @@ public class NotificationServiceImpl implements NotificationService {
             SseEmitter sseEmitter = userEmitters.get(user.getId().toString());
             if (sseEmitter != null) sseEmitter.send(notification);
         } catch (IOException e) {
-            logger.error("Failed to send notification to user {}", user.getId().toString());
+            logger.error(LogMessage.format("Failed to send notification to user %s", user.getId()), e);
         }
     }
 

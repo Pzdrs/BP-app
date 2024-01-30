@@ -18,10 +18,14 @@ public enum Role {
     @Getter
     private final Set<GrantedAuthority> permissions;
 
-    public List<SimpleGrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> list = new ArrayList<>(getPermissions().stream().map(permission -> new SimpleGrantedAuthority(permission.getAuthority())).toList());
-        list.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
+    public List<GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> list = new ArrayList<>(getPermissions().stream().map(permission -> new SimpleGrantedAuthority(permission.getAuthority())).toList());
+        list.add(getAuthority());
         return list;
+    }
+
+    public GrantedAuthority getAuthority() {
+        return new SimpleGrantedAuthority("ROLE_" + this.name());
     }
 
     public static Role getDefault() {

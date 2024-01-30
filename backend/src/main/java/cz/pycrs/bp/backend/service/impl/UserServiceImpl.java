@@ -22,8 +22,6 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    private final SessionService sessionService;
-
     private final PasswordEncoder passwordEncoder;
 
     @Override

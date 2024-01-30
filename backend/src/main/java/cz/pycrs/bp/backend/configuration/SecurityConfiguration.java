@@ -1,6 +1,7 @@
 package cz.pycrs.bp.backend.configuration;
 
 import cz.pycrs.bp.backend.entity.user.Role;
+import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.security.JsonUsernamePasswordAuthenticationFilter;
 import cz.pycrs.bp.backend.security.PreUpdateSecurityContextInterceptor;
 import cz.pycrs.bp.backend.service.UserService;
@@ -9,8 +10,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -56,13 +59,25 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                     authorize.requestMatchers("/auth/**").permitAll();
 
                     authorize.requestMatchers(HttpMethod.GET, "/datasource/**").authenticated();
-                    authorize.requestMatchers(request -> !HttpMethod.GET.matches(request.getMethod())).hasAnyRole(Role.ADMINISTRATOR.name());
+                    authorize.requestMatchers(request ->
+                                    request.getServletPath().startsWith("/datasource/") && !HttpMethod.GET.matches(request.getMethod()))
+                            .hasAnyRole(Role.ADMINISTRATOR.name());
 
                     // Only administrators can alter the configuration, everyone else can read it tho
                     authorize.requestMatchers("/config/**").authenticated();
                     authorize.requestMatchers(HttpMethod.POST, "/config/**").hasAnyRole(Role.ADMINISTRATOR.name());
 
+                    // Any authenticated user can access their own profile
                     authorize.requestMatchers("/user/me").authenticated();
+                    // Users can modify their own profile only, administrators can modify any profile
+                    authorize.requestMatchers(HttpMethod.PATCH, "/user/{id}").access((authentication, object) -> {
+                        Authentication auth = authentication.get();
+                        return new AuthorizationDecision(
+                                auth.getAuthorities().contains(Role.ADMINISTRATOR.getAuthority())
+                                        || ((User) auth.getPrincipal()).getId().toString().equals(object.getVariables().get("id"))
+                        );
+                    });
+                    // Anything else in the user namespace is only accessible to administrators
                     authorize.requestMatchers("/user/**").hasRole(Role.ADMINISTRATOR.name());
 
                     authorize.requestMatchers("/notification/**").authenticated();

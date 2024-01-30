@@ -7,17 +7,21 @@ import cz.pycrs.bp.backend.service.ApplicationConfigurationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService {
     private final ApplicationConfigurationRepository applicationConfigurationRepository;
 
     @Override
-    public MqttConfiguration getMqttConfiguration() {
-        return applicationConfigurationRepository
-                .findById(MqttConfiguration.KEY)
-                .map(applicationConfiguration -> (MqttConfiguration) applicationConfiguration.getValue())
-                .orElse(null);
+    public Optional<MqttConfiguration> getMqttConfiguration() {
+        return Optional.ofNullable(
+                (MqttConfiguration) applicationConfigurationRepository
+                        .findById(MqttConfiguration.KEY)
+                        .map(ApplicationConfiguration::getValue)
+                        .orElse(null)
+        );
     }
 
     @Override

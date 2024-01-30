@@ -14,7 +14,7 @@ public class ApplicationConfigurationController {
 
     @GetMapping("/mqtt")
     public MqttConfiguration getMqttConfiguration() {
-        return applicationConfigurationService.getMqttConfiguration();
+        return applicationConfigurationService.getMqttConfiguration().orElse(null);
     }
 
 

@@ -2,29 +2,28 @@ package cz.pycrs.bp.backend.service.impl;
 
 import cz.pycrs.bp.backend.entity.user.Role;
 import cz.pycrs.bp.backend.entity.user.User;
-import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
 import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
 import cz.pycrs.bp.backend.payload.UserUpdateRequest;
 import cz.pycrs.bp.backend.repository.UserRepository;
+import cz.pycrs.bp.backend.service.SessionService;
 import cz.pycrs.bp.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
+    private final SessionService sessionService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -60,6 +59,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Set<String> getAssignedDataSourceIds(User user) {
+        return user.getDataSources();
+    }
+
+    @Override
+    public Set<String> getAssignedDataSourceGroups(User user) {
+        return user.getDataSourceGroups();
+    }
+
+    @Override
     public List<Role> getAllRoles() {
         return List.of(Role.values());
     }
@@ -76,15 +85,11 @@ public class UserServiceImpl implements UserService {
             user.setLastName(request.lastName());
             if (!request.password().isBlank()) user.setPassword(passwordEncoder.encode(request.password()));
             if (request.role() != null) user.setRole(request.role());
-            User updatedUser = userRepository.save(user);
 
-            // If the updated user is the currently authenticated user, update the principal in the security context
-            if (((User) authentication.getPrincipal()).getId().equals(updatedUser.getId())) {
-                SecurityContextHolder.getContext().setAuthentication(
-                        new PreAuthenticatedAuthenticationToken(updatedUser, null, updatedUser.getAuthorities())
-                );
-            }
-            return updatedUser;
+            user.setDataSources(request.dataSources());
+            user.setDataSourceGroups(request.dataSourceGroups());
+
+            return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 

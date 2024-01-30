@@ -1,40 +1,38 @@
 package cz.pycrs.bp.backend.configuration;
 
 import cz.pycrs.bp.backend.entity.user.Role;
-import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.security.JsonUsernamePasswordAuthenticationFilter;
-import jakarta.servlet.http.HttpServletRequest;
+import cz.pycrs.bp.backend.security.PreUpdateSecurityContextInterceptor;
+import cz.pycrs.bp.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
-import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.csrf.CsrfTokenRequestHandler;
-import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.web.cors.CorsConfiguration;
-
-import java.util.function.Supplier;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
-public class SecurityConfiguration {
+public class SecurityConfiguration implements WebMvcConfigurer {
     private final AuthenticationManager authenticationManager;
 
+    private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
+    private final UserService userService;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new PreUpdateSecurityContextInterceptor(userService));
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -76,7 +74,8 @@ public class SecurityConfiguration {
                     logout.deleteCookies("JSESSIONID");
                     logout.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
                 })
-                .addFilterAt(new JsonUsernamePasswordAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(new JsonUsernamePasswordAuthenticationFilter(authenticationManager, sessionAuthenticationStrategy), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 }

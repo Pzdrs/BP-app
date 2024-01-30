@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 
-@Document("datapoint")
+@Document("datapoints")
 @Data
 @NoArgsConstructor
 public class DataPoint {

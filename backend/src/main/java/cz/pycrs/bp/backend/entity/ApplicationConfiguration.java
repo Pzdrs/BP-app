@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document("configuration")
+@Document("configurations")
 @Data
 @AllArgsConstructor
 public class ApplicationConfiguration {
     @Id
-    private String key;
-    private Object value;
+    String key;
+    Object value;
 }

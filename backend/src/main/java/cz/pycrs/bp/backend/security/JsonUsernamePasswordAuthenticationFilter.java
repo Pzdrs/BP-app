@@ -11,19 +11,22 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-    public JsonUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JsonUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager, SessionAuthenticationStrategy sessionAuthenticationStrategy) {
         super(new AntPathRequestMatcher("/auth/login", "POST"), authenticationManager);
         setSecurityContextRepository(new DelegatingSecurityContextRepository(
                 new RequestAttributeSecurityContextRepository(),
                 new HttpSessionSecurityContextRepository()
         ));
+        setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
         setAuthenticationSuccessHandler((request, response, authentication) -> {
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");

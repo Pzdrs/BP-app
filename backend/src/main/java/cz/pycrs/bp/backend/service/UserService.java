@@ -2,13 +2,13 @@ package cz.pycrs.bp.backend.service;
 
 import cz.pycrs.bp.backend.entity.user.Role;
 import cz.pycrs.bp.backend.entity.user.User;
-import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
 import cz.pycrs.bp.backend.payload.UserRegistrationRequest;
 import cz.pycrs.bp.backend.payload.UserUpdateRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserService extends UserDetailsService {
     User createUser(UserRegistrationRequest request);
@@ -17,6 +17,9 @@ public interface UserService extends UserDetailsService {
 
     List<User> getAllUsers();
     List<User> getAllAdministrators();
+
+    Set<String> getAssignedDataSourceIds(User user);
+    Set<String> getAssignedDataSourceGroups(User user);
 
     List<Role> getAllRoles();
 

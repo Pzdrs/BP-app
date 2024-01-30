@@ -31,8 +31,9 @@ public class User implements UserDetails {
 
     private Role role = Role.USER;
 
-    // Can contain either group names or the ids of data sources
+    // Only useful if the user is not an administrator
     private Set<String> dataSources = Set.of();
+    private Set<String> dataSourceGroups = Set.of();
 
     @CreatedDate
     private Date created;

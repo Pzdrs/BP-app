@@ -3,6 +3,7 @@ function nullOrEmpty(value) {
 }
 
 export function getFullName(user) {
+    if (user === null) return '';
     if (nullOrEmpty(user.firstName) && nullOrEmpty(user.lastName)) return 'Unnamed user';
     return `${user.firstName} ${user.lastName}`;
 }

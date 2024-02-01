@@ -2,11 +2,12 @@
 import {onMounted, ref} from "vue";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
 import {useDataSourceStore} from "@/stores/datasource.store";
-import {getDisplayName, getRandomHexColor} from "@/utils/data_source";
+import {getDisplayName, getRandomHexColor} from "@/utils/dataSource";
 import {formatDate, toDate} from "@/utils/dates";
 import Modal from "@/components/modal/Modal.vue";
 import DataSourceModal from "@/components/modal/DataSourceModal.vue";
 import {useToast} from "vue-toast-notification";
+import {getSelectedOptions} from "@/utils/forms";
 
 const dataSourceStore = useDataSourceStore();
 const $toast = useToast({position: 'top-right'});
@@ -66,9 +67,8 @@ function openUpdateModal(dataSource) {
 }
 
 function updateDataSource(event) {
-  const groups = [...event.target.querySelector('select').options].filter(option => option.selected).map(option => option.value);
   const data = Object.fromEntries(new FormData(event.target));
-  data.groups = groups;
+  data.groups = getSelectedOptions(event.target.elements['groups']);
 
   dataSourceStore.updateDataSource(currentDataSource.value.id, data)
       .then(_ => {
@@ -149,98 +149,101 @@ onMounted(() => {
     </div>
   </div>
 
-  <Modal id="adopt">
-    <template #title>
-      Adopt data source
-    </template>
+  <template v-if="dataSourceStore.dataSources.length > 0">
+    <Modal id="adopt">
+      <template #title>
+        Adopt data source
+      </template>
 
-    <template #content>
-      <form @submit.prevent="adoptDataSource">
-        <div class="field">
-          <label class="label">Name</label>
-          <div class="control">
-            <input name="name" class="input" type="text" placeholder="Unnamed data source" required>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">Color</label>
-          <div class="control">
-            <input name="color" class="input" type="color" placeholder="Color" required>
-          </div>
-        </div>
-      </form>
-    </template>
-
-    <template #footer>
-      <button
-          onclick="this.parentElement.previousElementSibling.querySelector('form').dispatchEvent(new Event('submit'))"
-          class="button is-info">
-        Adopt
-      </button>
-    </template>
-  </Modal>
-
-  <DataSourceModal id="confirm-delete" :data-source="currentDataSource">
-    <template #content>
-      <p>Are you sure you want to delete this data source?</p>
-    </template>
-    <template #footer>
-      <button @click="deleteDataSource" class="button is-danger">Delete</button>
-    </template>
-  </DataSourceModal>
-
-  <DataSourceModal id="update" :data-source="currentDataSource">
-    <template #content>
-      <form @submit.prevent="updateDataSource">
-        <div class="field">
-          <label class="label">Name</label>
-          <div class="control">
-            <input name="name" class="input" type="text" :value="currentDataSource.name" required>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">Color</label>
-          <div class="control">
-            <input name="color" class="input" type="color" :value="currentDataSource.color" required>
-          </div>
-        </div>
-
-        <div class="field">
-          <label class="label">Groups</label>
-          <div class="control">
-            <div class="select is-multiple">
-              <select name="groups" multiple>
-                <option v-for="group in dataSourceStore.groups" :key="group" :value="group" :selected="hasGroup(group)">
-                  {{ group }}
-                </option>
-              </select>
+      <template #content>
+        <form @submit.prevent="adoptDataSource">
+          <div class="field">
+            <label class="label">Name</label>
+            <div class="control">
+              <input name="name" class="input" type="text" placeholder="Unnamed data source" required>
             </div>
           </div>
-          <div class="control mt-3">
-            <div class="field has-addons">
-              <p class="control">
-                <input id="new-group" class="input" type="text" placeholder="New data source group">
-              </p>
-              <p class="control">
-                <button class="button" @click.prevent="createNewGroup">
-                  Add
-                </button>
-              </p>
+
+          <div class="field">
+            <label class="label">Color</label>
+            <div class="control">
+              <input name="color" class="input" type="color" placeholder="Color" required>
             </div>
           </div>
-        </div>
-      </form>
-    </template>
-    <template #footer>
-      <button
-          onclick="this.parentElement.previousElementSibling.querySelector('form').dispatchEvent(new Event('submit'))"
-          class="button is-info">
-        Update
-      </button>
-    </template>
-  </DataSourceModal>
+        </form>
+      </template>
+
+      <template #footer>
+        <button
+            onclick="this.parentElement.previousElementSibling.querySelector('form').dispatchEvent(new Event('submit'))"
+            class="button is-info">
+          Adopt
+        </button>
+      </template>
+    </Modal>
+
+    <DataSourceModal id="confirm-delete" :data-source="currentDataSource">
+      <template #content>
+        <p>Are you sure you want to delete this data source?</p>
+      </template>
+      <template #footer>
+        <button @click="deleteDataSource" class="button is-danger">Delete</button>
+      </template>
+    </DataSourceModal>
+
+    <DataSourceModal id="update" :data-source="currentDataSource">
+      <template #content>
+        <form @submit.prevent="updateDataSource">
+          <div class="field">
+            <label class="label">Name</label>
+            <div class="control">
+              <input name="name" class="input" type="text" :value="currentDataSource.name" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Color</label>
+            <div class="control">
+              <input name="color" class="input" type="color" :value="currentDataSource.color" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Groups</label>
+            <div class="control">
+              <div class="select is-multiple">
+                <select name="groups" multiple>
+                  <option v-for="group in dataSourceStore.groups" :key="group" :value="group"
+                          :selected="hasGroup(group)">
+                    {{ group }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="control mt-3">
+              <div class="field has-addons">
+                <p class="control">
+                  <input id="new-group" class="input" type="text" placeholder="New data source group">
+                </p>
+                <p class="control">
+                  <button class="button" @click.prevent="createNewGroup">
+                    Add
+                  </button>
+                </p>
+              </div>
+            </div>
+          </div>
+        </form>
+      </template>
+      <template #footer>
+        <button
+            onclick="this.parentElement.previousElementSibling.querySelector('form').dispatchEvent(new Event('submit'))"
+            class="button is-info">
+          Update
+        </button>
+      </template>
+    </DataSourceModal>
+  </template>
 </template>
 
 <style scoped>

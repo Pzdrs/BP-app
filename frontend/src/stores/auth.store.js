@@ -1,20 +1,18 @@
 import {defineStore} from 'pinia'
 import authService from "@/services/auth.service";
 import {getFullName} from "@/utils/user";
+import {useNotificationStore} from "@/stores/notification.store";
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         details: null
     }),
     getters: {
-        isAuthenticated() {
-            return this.details !== null;
+        isAdministrator: (state) => {
+            return state.details !== null && state.details.role === 'ADMINISTRATOR';
         },
-        getCreatedAt() {
-            return Date.parse(this.details.created)
-        },
-        getUpdatedAt() {
-            return Date.parse(this.details.updated)
+        isAuthenticated: (state) => {
+            return state.details !== null;
         },
         hasAnyRole: (state) => (roles) => {
             if (state.details === null) return false;
@@ -36,6 +34,11 @@ export const useAuthStore = defineStore('auth', {
         async fetchProfile() {
             if (this.details === null) {
                 this.details = await authService.getProfile();
+
+                if (this.details !== null) {
+                    const notificationStore = useNotificationStore();
+                    notificationStore.listenForNotifications();
+                }
             }
         },
         /**
@@ -45,7 +48,11 @@ export const useAuthStore = defineStore('auth', {
          */
         signIn(data) {
             return authService.login(data.username, data.password)
-                .then(response => this.details = response.data);
+                .then(response => {
+                    this.details = response.data
+                    const notificationStore = useNotificationStore();
+                    notificationStore.listenForNotifications();
+                });
         },
         /**
          * Attempts to sign out the user.

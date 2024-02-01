@@ -1,6 +1,6 @@
 <script setup>
 import Modal from "@/components/modal/Modal.vue";
-import {getDisplayName} from "@/utils/data_source";
+import {getDisplayName} from "@/utils/dataSource";
 
 defineProps({
   id: {

@@ -3,8 +3,16 @@ import UserModal from "@/components/modal/UserModal.vue";
 import {closeModalByQuery} from "@/utils/modal";
 import {useUserStore} from "@/stores/user.store";
 import {useToast} from "vue-toast-notification";
+import {useDataSourceStore} from "@/stores/datasource.store";
+import {getNameOrId} from "@/utils/dataSource";
+import {getSelectedOptions} from "@/utils/forms";
 
 const userStore = useUserStore();
+const dataSourceStore = useDataSourceStore();
+
+dataSourceStore.loadDataSources();
+dataSourceStore.loadGroups();
+
 const $toast = useToast({position: 'top-right'});
 
 const props = defineProps({
@@ -19,7 +27,14 @@ const props = defineProps({
 });
 
 function updateUser(event) {
-  userStore.updateUser(props.user.id, Object.fromEntries(new FormData(event.target)))
+  const data = Object.fromEntries(new FormData(event.target))
+
+  if (props.user.role !== 'ADMINISTRATOR') {
+    data.dataSources = getSelectedOptions(event.target.elements['datasources']);
+    data.dataSourceGroups = getSelectedOptions(event.target.elements['datasource-groups']);
+  }
+
+  userStore.updateUser(props.user.id, data)
       .then(_ => {
         $toast.success('User updated');
         closeModalByQuery('#update');
@@ -28,6 +43,22 @@ function updateUser(event) {
         $toast.error('Failed to update user');
       });
   closeModalByQuery('#update');
+}
+
+function isAssignedDataSource(dataSourceId) {
+  try {
+    return props.user.assignedDataSources.includes(dataSourceId);
+  } catch (_) {
+    return false;
+  }
+}
+
+function isAssignedDataSourceGroup(group) {
+  try {
+    return props.user.assignedDataSourceGroups.includes(group);
+  } catch (_) {
+    return false;
+  }
 }
 </script>
 
@@ -69,6 +100,38 @@ function updateUser(event) {
             </span>
           </p>
         </div>
+
+        <section v-if="user.role !== 'ADMINISTRATOR'">
+          <p class="is-size-5 has-text-weight-bold mt-4 mb-0">Assigned data sources</p>
+
+          <div class="field is-horizontal">
+            <div class="field-body">
+              <div class="field">
+                <label class="label">Individual</label>
+                <div class="select is-multiple">
+                  <select name="datasources" multiple>
+                    <option v-for="dataSource in dataSourceStore.dataSources" :key="dataSource.id"
+                            :value="dataSource.id" :selected="isAssignedDataSource(dataSource.id)">
+                      {{ getNameOrId(dataSource) }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Groups</label>
+                <div class="select is-multiple">
+                  <select name="datasource-groups" multiple>
+                    <option v-for="group in dataSourceStore.groups" :key="group" :value="group"
+                            :selected="isAssignedDataSourceGroup(group)">
+                      {{ group }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </form>
     </template>
     <template #footer>

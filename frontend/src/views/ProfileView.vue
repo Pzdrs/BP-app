@@ -8,7 +8,7 @@ const userStore = useUserStore();
 
 const $toast = useToast({position: 'top-right'});
 
-userStore.loadRoles();
+if (authStore.isAdministrator) userStore.loadRoles();
 
 function updateUser(event) {
   userStore.updateUser(authStore.details.id, Object.fromEntries(new FormData(event.target)))
@@ -22,7 +22,7 @@ function updateUser(event) {
   <p class="is-size-3">My profile</p>
   <hr class="mt-3">
 
-  <form @submit.prevent="updateUser">
+  <form @submit.prevent="updateUser" v-if="authStore.isAuthenticated">
     <div class="field">
       <label class="label">Email</label>
       <div class="control">
@@ -43,8 +43,8 @@ function updateUser(event) {
         <input name="lastName" class="input" type="text" placeholder="Last name" :value="authStore.details.lastName">
       </div>
     </div>
-    
-    <div class="field">
+
+    <div v-if="authStore.details.role !== 'USER'" class="field">
       <label class="label">Role</label>
       <div class="select">
         <select name="role">

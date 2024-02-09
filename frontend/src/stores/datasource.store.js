@@ -7,6 +7,9 @@ export const useDataSourceStore = defineStore('data_source', {
         groups: []
     }),
     getters: {
+        getDataSourceById: (state) => (id) => {
+            return state.dataSources.find(dataSource => dataSource.id === id);
+        },
         getAdoptedDataSources: (state) => {
             return state.dataSources.filter(dataSource => dataSource.adopted);
         },

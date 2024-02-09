@@ -8,6 +8,7 @@ import Modal from "@/components/modal/Modal.vue";
 import DataSourceModal from "@/components/modal/DataSourceModal.vue";
 import {useToast} from "vue-toast-notification";
 import {getSelectedOptions} from "@/utils/forms";
+import NoDataSourcesAdoptedYetMessage from "@/components/message/NoDataSourcesAdoptedYetMessage.vue";
 
 const dataSourceStore = useDataSourceStore();
 const $toast = useToast({position: 'top-right'});
@@ -108,6 +109,8 @@ onMounted(() => {
       </div>
     </div>
   </article>
+
+  <NoDataSourcesAdoptedYetMessage v-if="dataSourceStore.dataSources.length === 0"/>
 
   <div class="list">
     <div v-for="dataSource in dataSourceStore.getAdoptedDataSources" :key="dataSource.id" class="list-item">

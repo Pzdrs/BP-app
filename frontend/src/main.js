@@ -9,6 +9,9 @@ import 'bulma-modal-fx/dist/js/modal-fx.min'
 import '@creativebulma/bulma-badge/dist/bulma-badge.min.css'
 import 'bulma-list/css/bulma-list.css'
 
+import 'bulma-calendar/dist/css/bulma-calendar.min.css'
+import 'bulma-calendar/dist/js/bulma-calendar.min'
+
 import {createPinia} from "pinia";
 import ToastPlugin from "vue-toast-notification";
 import 'vue-toast-notification/dist/theme-sugar.css'

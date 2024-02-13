@@ -58,6 +58,11 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
+    public DataSource getDataSource(String id) {
+        return dataSourceRepository.findById(id).orElseThrow();
+    }
+
+    @Override
     public List<DataSource> getAllDataSources() {
         return dataSourceRepository.findAll();
     }

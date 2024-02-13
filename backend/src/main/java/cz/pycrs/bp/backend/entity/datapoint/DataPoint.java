@@ -1,4 +1,4 @@
-package cz.pycrs.bp.backend.entity;
+package cz.pycrs.bp.backend.entity.datapoint;
 
 import cz.pycrs.bp.backend.entity.datasource.DataSource;
 import lombok.Data;
@@ -18,18 +18,18 @@ public class DataPoint {
     @MongoId
     private ObjectId id;
     @DocumentReference
-    private DataSource dataSource;
-    private double longitude, latitude, altitude;
+    private DataSource source;
+    private double lng, lat, alt;
     private double speed, course;
 
     @CreatedDate
-    private Date created;
+    private Date timestamp;
 
     public DataPoint(DataSource dataSource, double longitude, double latitude, double altitude, double speed, double course) {
-        this.dataSource = dataSource;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.altitude = altitude;
+        this.source = dataSource;
+        this.lng = longitude;
+        this.lat = latitude;
+        this.alt = altitude;
         this.speed = speed;
         this.course = course;
     }

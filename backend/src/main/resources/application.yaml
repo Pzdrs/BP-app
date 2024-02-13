@@ -11,3 +11,8 @@ spring:
 logging:
   level:
     org.springframework.security: TRACE
+
+server:
+  servlet:
+    session:
+      timeout: 0

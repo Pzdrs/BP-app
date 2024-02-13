@@ -1,10 +1,9 @@
 package cz.pycrs.bp.backend.handler;
 
-import cz.pycrs.bp.backend.entity.DataPoint;
+import cz.pycrs.bp.backend.entity.datapoint.DataPoint;
 import cz.pycrs.bp.backend.entity.datasource.DataSource;
 import cz.pycrs.bp.backend.service.DataPointService;
 import cz.pycrs.bp.backend.service.DataSourceService;
-import cz.pycrs.bp.backend.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;

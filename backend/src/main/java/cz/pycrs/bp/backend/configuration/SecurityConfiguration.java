@@ -63,6 +63,8 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                                     request.getServletPath().startsWith("/datasource/") && !HttpMethod.GET.matches(request.getMethod()))
                             .hasAnyRole(Role.ADMINISTRATOR.name());
 
+                    authorize.requestMatchers(HttpMethod.GET, "/datapoint/**").authenticated();
+
                     // Only administrators can alter the configuration, everyone else can read it tho
                     authorize.requestMatchers("/config/**").authenticated();
                     authorize.requestMatchers(HttpMethod.POST, "/config/**").hasAnyRole(Role.ADMINISTRATOR.name());

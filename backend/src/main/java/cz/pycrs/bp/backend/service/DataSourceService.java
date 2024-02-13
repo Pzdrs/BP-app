@@ -10,6 +10,8 @@ import java.util.List;
 public interface DataSourceService {
     DataSource getOrRegister(String mac);
 
+    DataSource getDataSource(String id);
+
     List<DataSource> getAllDataSources();
     List<DataSource> getAllDataSourcesForUser(User user);
 

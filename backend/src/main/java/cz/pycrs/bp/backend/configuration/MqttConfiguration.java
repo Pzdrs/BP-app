@@ -26,7 +26,10 @@ public class MqttConfiguration {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         MqttConnectOptions options = new MqttConnectOptions();
 
-        configurationService.getMqttConfiguration().ifPresent(mqttConfiguration -> mqttConfiguration.apply(options));
+        configurationService.getMqttConfiguration().ifPresent(mqttConfiguration -> {
+            mqttConfiguration.apply(options);
+            factory.setConnectionOptions(options);
+        });
 
         return factory;
     }

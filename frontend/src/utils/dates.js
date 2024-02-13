@@ -1,9 +1,8 @@
-import dateFormat from "dateformat";
 
 export function toDate(date) {
-    return new Date(Date.parse(date));
+    return new Date(date);
 }
 
-export function formatDate(date) {
-    return dateFormat(date, 'yyyy-mm-dd HH:MM:ss')
+export function localizeDateTime(date) {
+    return toDate(date).toLocaleString("cs-CZ");
 }

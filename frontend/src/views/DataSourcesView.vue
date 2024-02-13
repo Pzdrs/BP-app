@@ -3,7 +3,7 @@ import {onMounted, ref} from "vue";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
 import {useDataSourceStore} from "@/stores/datasource.store";
 import {getDisplayName, getRandomHexColor} from "@/utils/dataSource";
-import {formatDate, toDate} from "@/utils/dates";
+import {localizeDateTime} from "@/utils/dates";
 import Modal from "@/components/modal/Modal.vue";
 import DataSourceModal from "@/components/modal/DataSourceModal.vue";
 import {useToast} from "vue-toast-notification";
@@ -123,8 +123,8 @@ onMounted(() => {
         <div class="list-item-description is-flex is-justify-content-space-between is-align-items-center">
           <div>
             <p>{{ dataSource.mac }}</p>
-            <p>Discovered: <span>{{ formatDate(toDate(dataSource.created)) }}</span></p>
-            <p>Last modified: <span>{{ formatDate(toDate(dataSource.updated)) }}</span></p>
+            <p>Discovered: <span>{{ localizeDateTime(dataSource.created) }}</span></p>
+            <p>Last modified: <span>{{ localizeDateTime(dataSource.updated) }}</span></p>
           </div>
           <div class="tags are-medium">
             <span v-for="group in dataSource.groups" class="tag">{{ group }}</span>

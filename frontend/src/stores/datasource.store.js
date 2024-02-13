@@ -30,7 +30,7 @@ export const useDataSourceStore = defineStore('data_source', {
             return datasourceService.update(id, data)
                 .then(res => {
                     const index = this.dataSources.findIndex(dataSource => dataSource.id === id);
-                    this.dataSources.splice(index, 1, res.data);
+                    this.dataSources.splice(index, 1,res.data);
                 });
         },
         deleteDataSource(id) {

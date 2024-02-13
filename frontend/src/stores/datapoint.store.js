@@ -15,16 +15,19 @@ export const useDataPointStore = defineStore('data_point', {
         }
     },
     actions: {
-        fetchDataPoints(dataSource) {
-            return axios.get(`/datapoint/all?source=${dataSource}`).then(response => {
+        fetchDataPoints(dataSource, startDate, endDate) {
+            const params = new URLSearchParams({
+                source: dataSource,
+                start: startDate.toISOString(),
+                end: endDate.toISOString()
+            })
+            return axios.get(`/datapoint/all?${params.toString()}`).then(response => {
                 this.dataPoints.push(...response.data)
                 this.dataSources.push(dataSource)
             })
         },
-        clear(dataSourcesToKeep) {
-            this.dataPoints = this.dataPoints.filter(point => {
-                return dataSourcesToKeep.includes(point.source)
-            })
+        clear() {
+            this.dataPoints = [];
         }
     }
 })

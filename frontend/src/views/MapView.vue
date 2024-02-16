@@ -62,24 +62,23 @@ async function submit(event) {
         dataPoints.addLayer(dataPoint);
       }
 
-
       L.polyline(dataPointStore.getLatLngs, {color: dataSource.color}).addTo(map);
     });
   }
 
   loading.value = false;
   window.location.href = '#map';
-  console.log(dataPoints)
 }
 
 function clear() {
   dataPointStore.clear();
 
-  console.log(dataPoints)
-  dataPoints.clearLayers()
-  console.log(dataPoints)
-
-  document.querySelector('#map-settings').reset();
+  // Reset map
+  map.eachLayer(layer => {
+    if (layer instanceof L.Polyline || layer instanceof L.Circle) {
+      map.removeLayer(layer);
+    }
+  });
 
   setupCalendars();
 }

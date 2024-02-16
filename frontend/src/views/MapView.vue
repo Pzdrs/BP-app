@@ -4,13 +4,16 @@ import {useDataPointStore} from "@/stores/datapoint.store";
 import {useDataSourceStore} from "@/stores/datasource.store";
 import bulmaCalendar from "bulma-calendar";
 import NoDataSourcesAdoptedYetMessage from "@/components/message/NoDataSourcesAdoptedYetMessage.vue";
-import {localizeDateTime} from "@/utils/dates";
 import {useToast} from "vue-toast-notification";
+import {getPopUpHTML, mockPopUp} from "@/utils/dataPoint";
 
 const loading = ref(false);
 
 let map = null;
 
+let timeframe = [];
+
+const dataPoints = L.layerGroup();
 
 const dataPointStore = useDataPointStore();
 const dataSourceStore = useDataSourceStore();
@@ -43,55 +46,22 @@ async function submit(event) {
       }
 
       $toast.success(`Fetched ${dataPointStore.dataPoints.length} data points from <b>${dataSource.name}</b>`);
-      console.log(`Fetched ${dataPointStore.dataPoints.length} data points from ${dataSource.name}`)
 
-      dataPointStore.dataPoints.forEach(point => {
+      for (let i = 0; i < dataPointStore.dataPoints.length; i++) {
+        const point = dataPointStore.dataPoints[i];
+        const prevPoint = i === 0 ? {speed: 0} : dataPointStore.dataPoints[i - 1];
+
         let dataPoint = L.circle(point, {
           color: dataSource.color,
           fillOpacity: 1,
           radius: 1
         }).addTo(map);
 
-        dataPoint.bindPopup(`
-      <div>
-    <strong>${point.id}</strong>
-    <hr class="my-1">
-    <div class="is-flex is-justify-content-space-around">
-    <span>
-        <i class="fa-solid fa-arrows-left-right" title="Longitude"></i>
-        ${point.lng}
-    </span>
-    <span>
-        <i class="fa-solid fa-arrows-up-down" title="Latitude"></i>
-        ${point.lat}
-    </span>
+        dataPoint.bindPopup(getPopUpHTML(point, prevPoint))
 
-</div>
-<div class="is-flex is-justify-content-space-around mt-1">
-    <span>
-        <i class="fa-solid fa-arrows-up-to-line" title="Altitude"></i>
-        ${point.alt}m
-    </span>
-</div>
-   <div class="is-flex is-justify-content-space-around my-2">
-    <span class="tag is-info">
-      <i class="fa-solid fa-clock mr-1"></i>
-        ${localizeDateTime(point.timestamp)}
-    </span>
-</div>
-<div class="is-flex is-justify-content-space-around">
- <span class="tag is-warning">
-      <i class="fa-solid fa-truck-fast mr-1"></i>
-        <b class="pr-1">0</b> km/h
-    </span>
-    <span class="tag is-primary">
-      <i class="fa-regular fa-compass mr-1"></i>
-        West
-    </span>
-</div>
-  </div>
-    `)
-      })
+        dataPoints.addLayer(dataPoint);
+      }
+
 
       L.polyline(dataPointStore.getLatLngs, {color: dataSource.color}).addTo(map);
     });
@@ -99,87 +69,64 @@ async function submit(event) {
 
   loading.value = false;
   window.location.href = '#map';
+  console.log(dataPoints)
 }
 
 function clear() {
   dataPointStore.clear();
+
+  console.log(dataPoints)
+  dataPoints.clearLayers()
+  console.log(dataPoints)
+
+  document.querySelector('#map-settings').reset();
+
+  setupCalendars();
+}
+
+function setupCalendars() {
+  timeframe.forEach(calendar => {
+    if (calendar.element.name === 'from') {
+      calendar.startTime = '00:00';
+    }
+
+    if (calendar.element.name === 'to') {
+      calendar.startTime = '23:59';
+    }
+
+    calendar.startDate = new Date();
+
+    calendar.save()
+  })
 }
 
 
 onMounted(() => {
-  map = L.map('map').setView([50.433125, 14.630015], 19);
+  map = L.map('map').setView([0, 0], 2);
+
+  // Try to get the user's location
+  navigator.geolocation.getCurrentPosition(pos => {
+    map.setView([pos.coords.latitude, pos.coords.longitude], 9);
+  })
+
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map);
 
-  bulmaCalendar.attach('[type="datetime-local"][name="from"]', {
+  timeframe.push(...bulmaCalendar.attach('[type="datetime-local"]', {
     type: 'datetime',
     color: 'info',
-    startDate: new Date(),
     validateLabel: 'Apply',
-  });
+  }));
 
-  bulmaCalendar.attach('[type="datetime-local"][name="to"]', {
-    type: 'datetime',
-    color: 'info',
-    startDate: new Date(),
-    startTime: '23:59',
-    validateLabel: 'Apply',
-  });
+  setupCalendars();
+});
 
-  let dataPoint = L.circle([50.433125, 14.630015], {
-    color: 'red',
-    fillOpacity: 1,
-    radius: 1
-  }).addTo(map);
-
-  dataPoint.bindPopup(`
-      <div>
-    <strong>65ca8063917973aac04200f7</strong>
-    <hr class="my-1">
-    <div class="is-flex is-justify-content-space-around">
-    <span>
-        <i class="fa-solid fa-arrows-left-right" title="Longitude"></i>
-        14.63443
-    </span>
-    <span>
-        <i class="fa-solid fa-arrows-up-down" title="Latitude"></i>
-        50.43497
-    </span>
-
-</div>
-<div class="is-flex is-justify-content-space-around mt-1">
-    <span>
-        <i class="fa-solid fa-arrows-up-to-line" title="Altitude"></i>
-        136.5m
-    </span>
-</div>
-   <div class="is-flex is-justify-content-space-around my-2">
-    <span class="tag is-info">
-      <i class="fa-solid fa-clock mr-1"></i>
-        12. 2. 2024 12:00
-    </span>
-</div>
-<div class="is-flex is-justify-content-space-around">
- <span class="tag is-warning">
-      <i class="fa-solid fa-truck-fast mr-1"></i>
-        <b class="pr-1">55</b> km/h
-    </span>
-    <span class="tag is-primary">
-      <i class="fa-regular fa-compass mr-1"></i>
-        West
-    </span>
-</div>
-  </div>
-    `)
-})
-;
 </script>
 
 <template>
-
-  <form class="mb-5" @submit.prevent="submit">
+  <form id="map-settings" class="mb-5" @submit.prevent="submit">
     <div class="columns">
       <div id="data-sources" class="column is-6">
         <p class="is-size-4">Data sources</p>
@@ -203,7 +150,7 @@ onMounted(() => {
     </div>
     <div class="field is-flex is-justify-content-flex-end">
       <div class="buttons">
-        <button class="button is-danger" @click="clear">
+        <button class="button is-danger" @click.prevent="clear">
       <span class="icon">
         <i class="fa-solid fa-xmark"></i>
       </span>

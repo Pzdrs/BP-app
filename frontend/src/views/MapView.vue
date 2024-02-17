@@ -5,15 +5,13 @@ import {useDataSourceStore} from "@/stores/datasource.store";
 import bulmaCalendar from "bulma-calendar";
 import NoDataSourcesAdoptedYetMessage from "@/components/message/NoDataSourcesAdoptedYetMessage.vue";
 import {useToast} from "vue-toast-notification";
-import {getPopUpHTML, mockPopUp} from "@/utils/dataPoint";
+import {getPopUpHTML} from "@/utils/dataPoint";
 
 const loading = ref(false);
 
 let map = null;
 
 let timeframe = [];
-
-const dataPoints = L.layerGroup();
 
 const dataPointStore = useDataPointStore();
 const dataSourceStore = useDataSourceStore();
@@ -58,8 +56,6 @@ async function submit(event) {
         }).addTo(map);
 
         dataPoint.bindPopup(getPopUpHTML(point, prevPoint))
-
-        dataPoints.addLayer(dataPoint);
       }
 
       L.polyline(dataPointStore.getLatLngs, {color: dataSource.color}).addTo(map);

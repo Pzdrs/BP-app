@@ -13,6 +13,8 @@ let map = null;
 
 let timeframe = [];
 
+let lastDataPoint;
+
 const dataPointStore = useDataPointStore();
 const dataSourceStore = useDataSourceStore();
 
@@ -47,7 +49,7 @@ async function submit(event) {
 
       for (let i = 0; i < dataPointStore.dataPoints.length; i++) {
         const point = dataPointStore.dataPoints[i];
-        const prevPoint = i === 0 ? {speed: 0} : dataPointStore.dataPoints[i - 1];
+        lastDataPoint = i === 0 ? {speed: 0} : dataPointStore.dataPoints[i - 1];
 
         let dataPoint = L.circle(point, {
           color: dataSource.color,
@@ -55,12 +57,33 @@ async function submit(event) {
           radius: 1
         }).addTo(map);
 
-        dataPoint.bindPopup(getPopUpHTML(point, prevPoint))
+        dataPoint.bindPopup(getPopUpHTML(point, lastDataPoint))
       }
 
       L.polyline(dataPointStore.getLatLngs, {color: dataSource.color}).addTo(map);
     });
   }
+  dataPointStore.listen(selectedDataSources, (point) => {
+    if(lastDataPoint == null) {
+      lastDataPoint = {
+        lat: point.lat,
+        lng: point.lng,
+        speed: 0
+      }
+    }
+    const dataSource = dataSourceStore.getDataSourceById(point.source);
+    let dataPoint = L.circle([point.lat, point.lng], {
+      color: dataSource.color,
+      fillOpacity: 1,
+      radius: 1
+    }).addTo(map);
+    dataPoint.bindPopup(getPopUpHTML(point, lastDataPoint))
+    L.polyline([
+      [lastDataPoint.lat, lastDataPoint.lng],
+      [point.lat, point.lng]
+    ], {color: dataSource.color}).addTo(map);
+    lastDataPoint = point;
+  })
 
   loading.value = false;
   window.location.href = '#map';

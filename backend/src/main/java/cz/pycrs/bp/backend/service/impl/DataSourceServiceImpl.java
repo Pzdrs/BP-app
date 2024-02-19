@@ -9,21 +9,22 @@ import cz.pycrs.bp.backend.payload.DataSourceUpdateRequest;
 import cz.pycrs.bp.backend.repository.DataSourceRepository;
 import cz.pycrs.bp.backend.service.DataSourceService;
 import cz.pycrs.bp.backend.service.NotificationService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.core.log.LogMessage;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class DataSourceServiceImpl implements DataSourceService {
-    private static final Log logger = LogFactory.getLog(DataSourceServiceImpl.class);
     /**
      * <p>1. If the user is an administrator, they have access to every data source.</p>
      * <p>2. If the user's <i>dataSources</i> list contains the data source's <b>id</b>, the data source is visible to the user.</p>
@@ -36,6 +37,11 @@ public class DataSourceServiceImpl implements DataSourceService {
         return dataSource.getGroups().stream().anyMatch(user.getDataSourceGroups()::contains);
     };
 
+    /**
+     * Keeps track of each session, that is listening to one or more data sources.
+     */
+    public final Map<SseEmitter, Set<DataSource>> dataSourceEmitters = new ConcurrentHashMap<>();
+
     private final DataSourceRepository dataSourceRepository;
     private final NotificationService notificationService;
 
@@ -44,7 +50,7 @@ public class DataSourceServiceImpl implements DataSourceService {
         return dataSourceRepository
                 .findByMac(mac)
                 .orElseGet(() -> {
-                    logger.info(LogMessage.format("Registering a new data source: %s", mac));
+                    log.info(LogMessage.format("Registering a new data source: %s", mac));
                     notificationService.notifyAdministrators(
                             new Notification(
                                     Notification.Severity.INFO,
@@ -59,7 +65,7 @@ public class DataSourceServiceImpl implements DataSourceService {
 
     @Override
     public DataSource getDataSource(String id) {
-        return dataSourceRepository.findById(id).orElseThrow();
+        return dataSourceRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -107,5 +113,18 @@ public class DataSourceServiceImpl implements DataSourceService {
                 .stream()
                 .flatMap(dataSource -> dataSource.getGroups().stream())
                 .distinct().toList();
+    }
+
+    @Override
+    public SseEmitter registerEmitter(HttpSession session, Set<DataSource> dataSources) {
+        log.info("Registering a new emitter for session {}", session.getId());
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        dataSourceEmitters.put(emitter, dataSources);
+        return emitter;
+    }
+
+    @Override
+    public Map<SseEmitter, Set<DataSource>> getEmitterRegistry() {
+        return dataSourceEmitters;
     }
 }

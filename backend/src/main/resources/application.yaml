@@ -11,8 +11,10 @@ spring:
 logging:
   level:
     org.springframework.security: TRACE
+    cz.pycrs: TRACE
 
 server:
   servlet:
     session:
       timeout: 0
+

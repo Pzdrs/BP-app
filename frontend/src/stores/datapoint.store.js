@@ -23,10 +23,13 @@ export const useDataPointStore = defineStore('data_point', {
                 start: startDate.toISOString(),
                 end: endDate.toISOString()
             })
-            return axios.get(`/datapoint/all?${params.toString()}`).then(response => {
-                this.dataPoints.push(...response.data)
-                this.dataSources.push(dataSource)
-            })
+            return axios.get(`/datapoint/all?${params.toString()}`)
+                .then(response => {
+                    const points = response.data;
+                    this.dataPoints.push(...points)
+                    this.dataSources.push(dataSource)
+                    return points;
+                });
         },
         listen(dataSources, handler) {
             const eventSource = datapointService.listen(dataSources);

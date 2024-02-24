@@ -5,7 +5,7 @@ import {useDataSourceStore} from "@/stores/datasource.store";
 import bulmaCalendar from "bulma-calendar";
 import NoDataSourcesAdoptedYetMessage from "@/components/message/NoDataSourcesAdoptedYetMessage.vue";
 import {useToast} from "vue-toast-notification";
-import {getPopUpHTML} from "@/utils/dataPoint";
+import {distance, getPopUpHTML} from "@/utils/dataPoint";
 
 const loading = ref(false);
 
@@ -24,6 +24,24 @@ dataSourceStore.loadDataSources();
 dataSourceStore.loadGroups();
 
 async function submit(event) {
+  function drawSegment(point, previousPoint, dataSource) {
+    let dataPoint = L.circle(point, {
+      color: dataSource.color,
+      fillOpacity: 1,
+      radius: 1
+    }).addTo(map);
+
+    dataPoint.bindPopup(getPopUpHTML(point, previousPoint))
+
+    if (distance(point, previousPoint) > 10) return;
+    L.polyline([
+      [previousPoint.lat, previousPoint.lng],
+      [point.lat, point.lng]
+    ], {color: dataSource.color}).addTo(map);
+  }
+
+  const timeStart = new Date();
+
   const startDate = new Date(event.target.from.value)
   const endDate = new Date(event.target.to.value)
   const selectedDataSources = Array.from(document.querySelector('#data-sources').querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.getAttribute('data-source-id'));
@@ -39,32 +57,33 @@ async function submit(event) {
 
   for (let selectedDataSource of selectedDataSources) {
     const dataSource = dataSourceStore.getDataSourceById(selectedDataSource);
-    await dataPointStore.fetchDataPoints(selectedDataSource, startDate, endDate).then(() => {
-      if (dataPointStore.dataPoints.length === 0) {
+    await dataPointStore.fetchDataPoints(selectedDataSource, startDate, endDate).then(dataPoints => {
+      if (dataPoints.length === 0) {
         $toast.info(`No data points from <b>${dataSource.name}</b> in the selected time range`);
         return;
       }
 
-      $toast.success(`Fetched ${dataPointStore.dataPoints.length} data points from <b>${dataSource.name}</b>`);
+      $toast.success(`Fetched ${dataPoints.length} data points from <b>${dataSource.name}</b>`);
 
-      for (let i = 0; i < dataPointStore.dataPoints.length; i++) {
-        const point = dataPointStore.dataPoints[i];
-        lastDataPoint = i === 0 ? {speed: 0} : dataPointStore.dataPoints[i - 1];
+      for (let i = 0; i < dataPoints.length; i++) {
+        const point = dataPoints[i];
+        lastDataPoint = i === 0 ? {
+          lat: point.lat,
+          lng: point.lng,
+          speed: 0
+        } : dataPoints[i - 1];
 
-        let dataPoint = L.circle(point, {
-          color: dataSource.color,
-          fillOpacity: 1,
-          radius: 1
-        }).addTo(map);
-
-        dataPoint.bindPopup(getPopUpHTML(point, lastDataPoint))
+        drawSegment(point, lastDataPoint, dataSource);
       }
-
-      L.polyline(dataPointStore.getLatLngs, {color: dataSource.color}).addTo(map);
     });
   }
+
+  const timeEnd = new Date();
+
+  console.log(`Fetching and drawing data points took ${timeEnd - timeStart}ms`);
+
   dataPointStore.listen(selectedDataSources, (point) => {
-    if(lastDataPoint == null) {
+    if (lastDataPoint == null) {
       lastDataPoint = {
         lat: point.lat,
         lng: point.lng,
@@ -72,16 +91,7 @@ async function submit(event) {
       }
     }
     const dataSource = dataSourceStore.getDataSourceById(point.source);
-    let dataPoint = L.circle([point.lat, point.lng], {
-      color: dataSource.color,
-      fillOpacity: 1,
-      radius: 1
-    }).addTo(map);
-    dataPoint.bindPopup(getPopUpHTML(point, lastDataPoint))
-    L.polyline([
-      [lastDataPoint.lat, lastDataPoint.lng],
-      [point.lat, point.lng]
-    ], {color: dataSource.color}).addTo(map);
+    drawSegment(point, lastDataPoint, dataSource);
     lastDataPoint = point;
   })
 

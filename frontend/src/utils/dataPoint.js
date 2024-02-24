@@ -22,6 +22,23 @@ function translateCourse(course) {
     return 'North';
 }
 
+export function distance(point1, point2) {
+    function toRad(deg) {
+        return deg * Math.PI / 180;
+    }
+
+    const R = 6371; // km
+    const latDelta = toRad(point2.lat - point1.lat);
+    const lngDelta = toRad(point2.lng - point1.lng);
+    const lat1 = toRad(point1.lat);
+    const lat2 = toRad(point2.lat);
+
+    const a = Math.sin(latDelta / 2) * Math.sin(latDelta / 2) +
+        Math.sin(lngDelta / 2) * Math.sin(lngDelta / 2) * Math.cos(lat1) * Math.cos(lat2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
 export function mockPopUp(prevPoint = {speed: 50}) {
     return getPopUpHTML({
         "id": "65cfe5b42c97d00f083ff40b",

@@ -4,10 +4,8 @@ spring:
   data:
     mongodb:
       database: es-gps
-      host: localhost
-      authentication-database: admin
-      username: admin
-      password: admin
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PORT:27017}
 logging:
   level:
     org.springframework.security: TRACE

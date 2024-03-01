@@ -5,6 +5,7 @@ import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.payload.DataSourceAdoptionRequest;
 import cz.pycrs.bp.backend.payload.DataSourceUpdateRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface DataSourceService {
 
     List<DataSource> getAllDataSources();
 
-    List<DataSource> getAllDataSourcesForUser(User user);
+    List<DataSource> getAllDataSourcesForUser(Authentication authentication);
 
     void deleteDataSource(String id);
 

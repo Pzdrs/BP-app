@@ -6,6 +6,7 @@ spring:
       database: es-gps
       host: ${MONGO_HOST:localhost}
       port: ${MONGO_PORT:27017}
+
 logging:
   level:
     org.springframework.security: TRACE

@@ -19,7 +19,7 @@ public class DataSourceController {
 
     @GetMapping("/all")
     public List<DataSourceDetail> allUsers(Authentication authentication) {
-        return dataSourceService.getAllDataSourcesForUser(((User) authentication.getPrincipal()))
+        return dataSourceService.getAllDataSourcesForUser(authentication)
                 .stream().map(DataSourceDetail::new).toList();
     }
 

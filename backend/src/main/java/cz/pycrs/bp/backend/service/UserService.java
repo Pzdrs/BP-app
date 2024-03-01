@@ -18,9 +18,6 @@ public interface UserService extends UserDetailsService {
     List<User> getAllUsers();
     List<User> getAllAdministrators();
 
-    Set<String> getAssignedDataSourceIds(User user);
-    Set<String> getAssignedDataSourceGroups(User user);
-
     List<Role> getAllRoles();
 
     void deleteUser(String id);

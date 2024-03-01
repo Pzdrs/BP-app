@@ -4,6 +4,8 @@ import cz.pycrs.bp.backend.entity.user.Role;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.security.JsonUsernamePasswordAuthenticationFilter;
 import cz.pycrs.bp.backend.security.PreUpdateSecurityContextInterceptor;
+import cz.pycrs.bp.backend.security.accesstoken.AccessTokenAuthenticationConfigurer;
+import cz.pycrs.bp.backend.service.TokenService;
 import cz.pycrs.bp.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,12 +23,15 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfiguration implements WebMvcConfigurer {
     private final AuthenticationManager authenticationManager;
 
     private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
+    private final TokenService tokenService;
     private final UserService userService;
 
     @Override
@@ -81,6 +86,8 @@ public class SecurityConfiguration implements WebMvcConfigurer {
 
                     authorize.requestMatchers("/notification/**").authenticated();
 
+                    authorize.requestMatchers("/token/**").hasRole(Role.ADMINISTRATOR.name());
+
                     authorize.anyRequest().denyAll();
                 })
                 .logout(logout -> {
@@ -89,6 +96,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                     logout.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
                 })
                 .addFilterAt(new JsonUsernamePasswordAuthenticationFilter(authenticationManager, sessionAuthenticationStrategy), UsernamePasswordAuthenticationFilter.class)
+                .with(new AccessTokenAuthenticationConfigurer(tokenService), withDefaults())
                 .build();
     }
 

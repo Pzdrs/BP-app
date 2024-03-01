@@ -57,16 +57,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Set<String> getAssignedDataSourceIds(User user) {
-        return user.getDataSources();
-    }
-
-    @Override
-    public Set<String> getAssignedDataSourceGroups(User user) {
-        return user.getDataSourceGroups();
-    }
-
-    @Override
     public List<Role> getAllRoles() {
         return List.of(Role.values());
     }

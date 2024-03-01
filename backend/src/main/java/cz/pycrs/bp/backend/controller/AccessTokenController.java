@@ -1,0 +1,31 @@
+package cz.pycrs.bp.backend.controller;
+
+import cz.pycrs.bp.backend.entity.accesstoken.AccessToken;
+import cz.pycrs.bp.backend.entity.accesstoken.dto.AccessTokenDetail;
+import cz.pycrs.bp.backend.payload.AccessTokenIssueRequest;
+import cz.pycrs.bp.backend.service.TokenService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/token")
+@RequiredArgsConstructor
+public class AccessTokenController {
+    private final TokenService tokenService;
+
+    @GetMapping("/all")
+    public Set<AccessTokenDetail> all() {
+        return tokenService.getAllTokens().stream()
+                .map(token -> new AccessTokenDetail(((AccessToken) token)))
+                .collect(Collectors.toSet());
+    }
+
+    @PostMapping("/issue")
+    public AccessTokenDetail issue(Authentication authentication, @RequestBody AccessTokenIssueRequest request) {
+        return new AccessTokenDetail(((AccessToken) tokenService.issueToken(authentication, request)));
+    }
+}

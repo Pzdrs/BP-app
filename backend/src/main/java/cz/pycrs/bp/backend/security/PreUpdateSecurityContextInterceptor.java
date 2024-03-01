@@ -24,10 +24,12 @@ public class PreUpdateSecurityContextInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        SecurityContextHolder.getContext().setAuthentication(
-                new PreAuthenticatedAuthenticationToken(userService.getUser(user.getId().toString()), null, user.getAuthorities()
-                ));
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof User user)
+            SecurityContextHolder.getContext().setAuthentication(
+                    new PreAuthenticatedAuthenticationToken(userService.getUser(user.getId().toString()), null, user.getAuthorities()
+                    ));
         return true;
     }
 }

@@ -1,10 +1,8 @@
 package cz.pycrs.bp.backend;
 
 import cz.pycrs.bp.backend.handler.MqttMessageHandler;
-import cz.pycrs.bp.backend.service.DataPointService;
-import cz.pycrs.bp.backend.service.DataSourceService;
-import cz.pycrs.bp.backend.service.NotificationService;
-import cz.pycrs.bp.backend.service.UserService;
+import cz.pycrs.bp.backend.repository.UserRepository;
+import cz.pycrs.bp.backend.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,8 +24,14 @@ public class BackendApplication {
     }
 
     @Bean
-    public CommandLineRunner startup(NotificationService notificationService, UserService userService) {
+    public CommandLineRunner startup(
+            NotificationService notificationService,
+            UserService userService,
+            UserRepository userRepository,
+            TokenService tokenService
+    ) {
         return args -> {
+            //tokenService.issueToken(userRepository.findByEmail("admin@email.cz").get(), null, "My token");
             /*notificationService.sendNotification(
                     (User) userService.loadUserByUsername("admin@email.cz"),
                     new Notification(Notification.Severity.INFO,"Info notification", "This is an informative notification.")

@@ -59,6 +59,15 @@ const router = createRouter({
                     },
                     component: () => import('../views/UserManagementView.vue')
                 }, {
+                    path: '/tokens',
+                    name: 'Access tokens',
+                    meta: {
+                        nav: true,
+                        icon: 'fa-solid fa-key',
+                        rolesAny: ['ADMINISTRATOR']
+                    },
+                    component: () => import('../views/AccessTokenManagementView.vue')
+                }, {
                     path: '/profile',
                     name: 'My profile',
                     meta: {

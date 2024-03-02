@@ -2,14 +2,12 @@ import {defineStore} from 'pinia'
 import tokenService from "@/services/token.service";
 
 
-export const useUserStore = defineStore('access_token', {
+export const useTokenStore = defineStore('access_token', {
     state: () => ({
         tokens: []
     }),
     getters: {
-        getUserTokens: (state) => (userId) => {
-            return state.tokens.filter(token => token.user.id === userId);
-        }
+        isNoTokens: state => state.tokens.length === 0
     },
     actions: {
         async loadTokens() {

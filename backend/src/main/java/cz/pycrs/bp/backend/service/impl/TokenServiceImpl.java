@@ -3,6 +3,7 @@ package cz.pycrs.bp.backend.service.impl;
 import cz.pycrs.bp.backend.entity.accesstoken.AccessToken;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.payload.AccessTokenIssueRequest;
+import cz.pycrs.bp.backend.payload.AccessTokenUpdateRequest;
 import cz.pycrs.bp.backend.repository.AccessTokenRepository;
 import cz.pycrs.bp.backend.service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Token getAccessToken(String key) {
-        return accessTokenRepository.findById(key).orElse(null);
+        return accessTokenRepository.findByValue(key).orElse(null);
     }
 
     @Override
@@ -37,17 +38,31 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Token issueToken(Authentication authentication, AccessTokenIssueRequest request) {
-        if(authentication.getPrincipal() instanceof AccessToken)
+        if (authentication.getPrincipal() instanceof AccessToken)
             throw new IllegalArgumentException("Cannot issue token for token");
         var user = (User) authentication.getPrincipal();
         var accessToken = AccessToken.builder()
-                .token(generateToken())
+                .value(generateToken())
                 .expiry(request.expiry())
                 .created(LocalDateTime.now())
                 .description(request.description())
                 .user(user)
                 .build();
         return accessTokenRepository.save(accessToken);
+    }
+
+    @Override
+    public Token updateToken(String id, AccessTokenUpdateRequest request) {
+        var accessToken = accessTokenRepository.findById(id).orElseThrow();
+        accessToken.setDescription(request.description());
+        accessToken.setExpiry(request.expiry());
+        accessToken.setDisabled(request.disabled());
+        return accessTokenRepository.save(accessToken);
+    }
+
+    @Override
+    public void revokeToken(String id) {
+        accessTokenRepository.deleteById(id);
     }
 
 

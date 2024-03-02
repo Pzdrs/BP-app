@@ -3,6 +3,7 @@ package cz.pycrs.bp.backend.controller;
 import cz.pycrs.bp.backend.entity.accesstoken.AccessToken;
 import cz.pycrs.bp.backend.entity.accesstoken.dto.AccessTokenDetail;
 import cz.pycrs.bp.backend.payload.AccessTokenIssueRequest;
+import cz.pycrs.bp.backend.payload.AccessTokenUpdateRequest;
 import cz.pycrs.bp.backend.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -27,5 +28,15 @@ public class AccessTokenController {
     @PostMapping("/issue")
     public AccessTokenDetail issue(Authentication authentication, @RequestBody AccessTokenIssueRequest request) {
         return new AccessTokenDetail(((AccessToken) tokenService.issueToken(authentication, request)));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable String id) {
+        tokenService.revokeToken(id);
+    }
+
+    @PatchMapping("/{id}")
+    public AccessTokenDetail update(@PathVariable String id, @RequestBody AccessTokenUpdateRequest request) {
+        return new AccessTokenDetail(((AccessToken) tokenService.updateToken(id, request)));
     }
 }

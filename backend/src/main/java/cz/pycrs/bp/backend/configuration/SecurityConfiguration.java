@@ -4,6 +4,7 @@ import cz.pycrs.bp.backend.entity.user.Role;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.security.JsonUsernamePasswordAuthenticationFilter;
 import cz.pycrs.bp.backend.security.PreUpdateSecurityContextInterceptor;
+import cz.pycrs.bp.backend.security.RestfulAuthenticationEntryPoint;
 import cz.pycrs.bp.backend.security.accesstoken.AccessTokenAuthenticationConfigurer;
 import cz.pycrs.bp.backend.service.TokenService;
 import cz.pycrs.bp.backend.service.UserService;
@@ -97,6 +98,9 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 })
                 .addFilterAt(new JsonUsernamePasswordAuthenticationFilter(authenticationManager, sessionAuthenticationStrategy), UsernamePasswordAuthenticationFilter.class)
                 .with(new AccessTokenAuthenticationConfigurer(tokenService), withDefaults())
+                .exceptionHandling(exceptionHandling -> {
+                    exceptionHandling.authenticationEntryPoint(new RestfulAuthenticationEntryPoint());
+                })
                 .build();
     }
 

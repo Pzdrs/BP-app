@@ -6,7 +6,8 @@ import cz.pycrs.bp.backend.entity.user.dto.UserProfile;
 import java.time.LocalDateTime;
 
 public record AccessTokenDetail(
-        String token,
+        String id,
+        String value,
         UserProfile user,
         LocalDateTime created,
         LocalDateTime expiry,
@@ -15,7 +16,8 @@ public record AccessTokenDetail(
 ) {
     public AccessTokenDetail(AccessToken accessToken) {
         this(
-                accessToken.getToken(),
+                accessToken.getId().toString(),
+                accessToken.getValue(),
                 new UserProfile(accessToken.getUser()),
                 accessToken.getCreated(),
                 accessToken.getExpiry(),

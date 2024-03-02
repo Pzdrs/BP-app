@@ -4,9 +4,11 @@ import cz.pycrs.bp.backend.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.security.core.token.Token;
 
 import java.time.LocalDateTime;
@@ -17,8 +19,9 @@ import java.time.ZoneOffset;
 @AllArgsConstructor
 @Builder
 public class AccessToken implements Token {
-    @Id
-    private final String token;
+    @MongoId
+    private ObjectId id;
+    private final String value;
     @DocumentReference
     private final User user;
     private final LocalDateTime created;
@@ -27,12 +30,12 @@ public class AccessToken implements Token {
     private LocalDateTime expiry;
 
     public boolean isExpired() {
-        return this.expiry != null && expiry.isAfter(LocalDateTime.now());
+        return this.expiry != null && expiry.isBefore(LocalDateTime.now());
     }
 
     @Override
     public String getKey() {
-        return this.token;
+        return this.value;
     }
 
     @Override

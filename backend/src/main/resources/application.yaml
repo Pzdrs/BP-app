@@ -4,11 +4,14 @@ spring:
   data:
     mongodb:
       database: es-gps
-      host: ${MONGO_HOST:localhost}
+      host: ${MONGO_HOST}
       port: ${MONGO_PORT:27017}
-      username: admin
-      password: admin
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
       authentication-database: admin
+
+cors:
+  allowed-origins: ${ALLOWED_ORIGINS}
 
 logging:
   level:

@@ -9,6 +9,7 @@ import cz.pycrs.bp.backend.security.accesstoken.AccessTokenAuthenticationConfigu
 import cz.pycrs.bp.backend.service.TokenService;
 import cz.pycrs.bp.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -35,6 +36,9 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     private final TokenService tokenService;
     private final UserService userService;
 
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new PreUpdateSecurityContextInterceptor(userService));
@@ -50,7 +54,9 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .cors(cors -> {
                     cors.configurationSource(request -> {
                         var corsConfiguration = new CorsConfiguration();
-                        corsConfiguration.addAllowedOrigin("http://localhost:5173");
+                        for (String origin : allowedOrigins.split(",")) {
+                            corsConfiguration.addAllowedOrigin(origin);
+                        }
                         corsConfiguration.addAllowedMethod("*");
                         corsConfiguration.addAllowedHeader("*");
                         corsConfiguration.setAllowCredentials(true);

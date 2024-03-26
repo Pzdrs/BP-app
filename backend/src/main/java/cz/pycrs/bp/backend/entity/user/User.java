@@ -1,5 +1,7 @@
 package cz.pycrs.bp.backend.entity.user;
 
+import cz.pycrs.bp.backend.entity.accesstoken.AccessToken;
+import cz.pycrs.bp.backend.security.accesstoken.AccessTokenAuthentication;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
@@ -8,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -86,5 +89,13 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public static User from(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) return null;
+        Object principal = authentication.getPrincipal();
+        if(principal instanceof User) return (User) principal;
+        if (principal instanceof AccessToken accessToken) return accessToken.getUser();
+        return null;
     }
 }

@@ -62,7 +62,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserProfile> userProfile(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
-            return ResponseEntity.ok(new UserProfile((User) authentication.getPrincipal()));
+            return ResponseEntity.ok(new UserProfile(User.from(authentication)));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }

@@ -32,8 +32,8 @@ public class DataSourceServiceImpl implements DataSourceService {
      * <p>3. If the user's <i>dataSources</i> list contains <b>any of the data source's groups</b>, the data source is visible to the user.</p>
      * <p>4. Otherwise, the data source is not visible to the user.</p>
      */
-    public static final BiPredicate<DataSource, Object> IS_VISIBLE_TO_USER = (dataSource, principal) -> {
-        var user = principal instanceof AccessToken ? ((AccessToken) principal).getUser() : (User) principal;
+    public static final BiPredicate<DataSource, Object> IS_VISIBLE_TO_USER = (dataSource, authentication) -> {
+        var user = User.from((Authentication) authentication);
 
         if (user.getRole() == Role.ADMINISTRATOR) return true;
         if (user.getDataSources().contains(dataSource.getId().toString())) return true;
@@ -78,7 +78,7 @@ public class DataSourceServiceImpl implements DataSourceService {
 
     @Override
     public List<DataSource> getAllDataSourcesForUser(Authentication authentication) {
-        return getAllDataSources().stream().filter(dataSource -> IS_VISIBLE_TO_USER.test(dataSource, authentication.getPrincipal())).toList();
+        return getAllDataSources().stream().filter(dataSource -> IS_VISIBLE_TO_USER.test(dataSource, authentication)).toList();
     }
 
     @Override

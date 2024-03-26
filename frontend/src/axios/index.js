@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080',
+    // has to be supplied at build time, not runtime
+    baseURL: import.meta.env.VITE_BACKEND_URL,
     xsrfCookieName: null,
     xsrfHeaderName: null,
     withCredentials: true,

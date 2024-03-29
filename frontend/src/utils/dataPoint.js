@@ -85,10 +85,10 @@ export function getPopUpHTML(point, prevPoint) {
 <div class="is-flex is-justify-content-space-around">
     <span class="tag is-warning mr-2">
         <i class="fa-solid fa-truck-fast mr-1"></i>
-        <b class="pr-1">${point.speed}</b> km/h
+        <b class="pr-1">${point.speed.toFixed(2)}</b> km/h
         <span class="ml-2 ${speedDeltaColor}">
             <i class="fa-solid ${speedDeltaIcon}"></i>
-            ${Math.abs(speedDelta)}
+            ${Math.abs(speedDelta).toFixed(2)}
         </span>
     </span>
     <span class="tag is-primary">

@@ -6,6 +6,7 @@ import bulmaCalendar from "bulma-calendar";
 import NoDataSourcesAdoptedYetMessage from "@/components/message/NoDataSourcesAdoptedYetMessage.vue";
 import {useToast} from "vue-toast-notification";
 import {distance, getPopUpHTML} from "@/utils/dataPoint";
+import {getDisplayName} from "../utils/dataSource";
 
 const loading = ref(false);
 
@@ -163,7 +164,7 @@ onMounted(() => {
         <div v-for="dataSource in dataSourceStore.dataSources" :key="dataSource.id" class="field">
           <label class="checkbox">
             <input type="checkbox" :style="{'accent-color': dataSource.color}" :data-source-id="dataSource.id">
-            {{ dataSource.name }}
+            {{ getDisplayName(dataSource) }}
           </label>
         </div>
       </div>

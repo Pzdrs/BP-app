@@ -19,13 +19,13 @@ public class NotificationController {
 
     @GetMapping(value = "/live", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter liveNotifications(Authentication authentication) {
-        return notificationService.createEmitter((User) authentication.getPrincipal());
+        return notificationService.createEmitter(User.from(authentication));
     }
 
     @GetMapping
     public List<NotificationDetail> userNotifications(Authentication authentication) {
         return notificationService
-                .getUserNotifications((User) authentication.getPrincipal())
+                .getUserNotifications(User.from(authentication))
                 .stream().map(NotificationDetail::new).toList();
     }
 

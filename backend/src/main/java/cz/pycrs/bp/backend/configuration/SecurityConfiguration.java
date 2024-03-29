@@ -85,7 +85,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         Authentication auth = authentication.get();
                         return new AuthorizationDecision(
                                 auth.getAuthorities().contains(Role.ADMINISTRATOR.getAuthority())
-                                        || ((User) auth.getPrincipal()).getId().toString().equals(object.getVariables().get("id"))
+                                        || (User.from(auth)).getId().toString().equals(object.getVariables().get("id"))
                         );
                     });
                     // Anything else in the user namespace is only accessible to administrators

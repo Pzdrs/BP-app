@@ -11,6 +11,7 @@ import 'bulma-list/css/bulma-list.css'
 
 import 'bulma-calendar/dist/css/bulma-calendar.min.css'
 import 'bulma-calendar/dist/js/bulma-calendar.min'
+import 'bulma-switch/dist/css/bulma-switch.min.css'
 
 import {createPinia} from "pinia";
 import ToastPlugin from "vue-toast-notification";

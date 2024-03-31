@@ -16,6 +16,9 @@ let timeframe = [];
 
 let lastDataPoint;
 
+let follow = ref(true);
+let selectedDataSourcesCount = ref(0);
+
 const dataPointStore = useDataPointStore();
 const dataSourceStore = useDataSourceStore();
 
@@ -130,6 +133,17 @@ function setupCalendars() {
   })
 }
 
+function dataSourceChanged(e) {
+  if (e.target.checked) {
+    selectedDataSourcesCount.value++;
+    if(selectedDataSourcesCount.value > 1) {
+      follow.value = false;
+    }
+  } else {
+    selectedDataSourcesCount.value--;
+  }
+}
+
 
 onMounted(() => {
   map = L.map('map').setView([0, 0], 2);
@@ -164,7 +178,7 @@ onMounted(() => {
         <NoDataSourcesAdoptedYetMessage v-if="dataSourceStore.dataSources.length === 0"/>
         <div v-for="dataSource in dataSourceStore.dataSources" :key="dataSource.id" class="field">
           <label class="checkbox">
-            <input type="checkbox" :style="{'accent-color': dataSource.color}" :data-source-id="dataSource.id">
+            <input type="checkbox" @change="dataSourceChanged" :style="{'accent-color': dataSource.color}" :data-source-id="dataSource.id">
             {{ getDisplayName(dataSource) }}
           </label>
         </div>
@@ -180,6 +194,11 @@ onMounted(() => {
     </div>
     <div class="field is-flex is-justify-content-flex-end">
       <div class="buttons">
+        <div class="field pr-3">
+          <input id="switchOutlinedDefault" @click="e=>follow=e.target.checked" :checked="follow" :disabled="selectedDataSourcesCount > 1" type="checkbox" name="switchOutlinedDefault" class="switch is-outlined" checked="checked">
+          <label for="switchOutlinedDefault">Follow</label>
+        </div>
+
         <button class="button is-danger" @click.prevent="clear">
       <span class="icon">
         <i class="fa-solid fa-xmark"></i>

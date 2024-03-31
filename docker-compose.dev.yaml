@@ -27,8 +27,8 @@ services:
       #proxy_net:
     environment:
       - DOMAIN=esgps.pycrs.cz
-      - SPRING_PORT=8080
-      - FRONTEND_PORT=80
+      - BACKEND_ADDRESS=backend:8080
+      - FRONTEND_ADDRESS=frontend:80
 
   # mongodb:
   #   image: mongo

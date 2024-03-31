@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     client.username_pw_set(MQTT_USERNAME, MQTT_PASSWORD)
     print("Connecting...")
-    client.connect("home.pycrs.cz", 1883, 60)
+    client.connect("10.0.0.15", 1883, 60)
     client.loop_start()
 
     coords = get_coords('data/activa.kml')

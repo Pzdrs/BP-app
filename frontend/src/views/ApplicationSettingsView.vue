@@ -1,7 +1,6 @@
 <script setup>
 
 
-
 import {ref} from "vue";
 import MqttSettings from "@/views/sub-views/settings/MqttSettings.vue";
 import DataManagement from "@/views/sub-views/settings/DataManagement.vue";
@@ -20,6 +19,7 @@ const tabs = [
     icon: 'fa-solid fa-database'
   }
 ];
+
 </script>
 
 <template>

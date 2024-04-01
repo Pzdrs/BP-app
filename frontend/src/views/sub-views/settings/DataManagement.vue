@@ -1,13 +1,11 @@
 <script setup>
 import {useToast} from "vue-toast-notification";
-import {getFullName} from "@/utils/user";
-import Modal from "@/components/modal/Modal.vue";
-import UserRoleTag from "@/components/UserRoleTag.vue";
 import ConfirmationModal from "@/components/modal/ConfirmationModal.vue";
-import {closeAllModals, openModal} from "@/utils/modal";
+import {closeAllModals, openModal, setupModals} from "@/utils/modal";
 import axios from "@/axios";
 import {useDataPointStore} from "@/stores/datapoint.store";
 import {useDataSourceStore} from "@/stores/datasource.store";
+import {onMounted} from "vue";
 
 
 const $toast = useToast({position: 'top-right'});
@@ -39,6 +37,9 @@ function confirmEraseDataSources() {
 function confirmEraseLocationData() {
   openModal('#confirm-erase-location-data');
 }
+
+onMounted(() => setupModals());
+
 </script>
 
 <template>

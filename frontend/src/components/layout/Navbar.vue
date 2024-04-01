@@ -38,7 +38,7 @@ onMounted(() => {
   });
   notificationDropdown.addEventListener('focusout', () => {
     // A timeout is needed, or the links don't work. Don't know why, don't care.
-    setTimeout(() => notificationDropdown.classList.remove('is-active'),100)
+    setTimeout(() => notificationDropdown.classList.remove('is-active'), 100)
   });
 })
 </script>

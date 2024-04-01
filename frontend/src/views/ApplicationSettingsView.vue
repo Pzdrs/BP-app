@@ -3,15 +3,21 @@
 
 
 import {ref} from "vue";
-import GeneralSettings from "@/views/sub-views/settings/GeneralSettings.vue";
+import MqttSettings from "@/views/sub-views/settings/MqttSettings.vue";
+import DataManagement from "@/views/sub-views/settings/DataManagement.vue";
 
-const currentTab = ref('general');
+const currentTab = ref('mqtt');
 
 const tabs = [
   {
-    id: 'general',
-    name: 'General',
-    icon: 'fas fa-music'
+    id: 'mqtt',
+    name: 'MQTT',
+    icon: 'fa-solid fa-envelope'
+  },
+  {
+    id: 'data',
+    name: 'Data',
+    icon: 'fa-solid fa-database'
   }
 ];
 </script>
@@ -31,7 +37,8 @@ const tabs = [
       </ul>
     </div>
 
-    <GeneralSettings v-if="currentTab === 'general'"/>
+    <MqttSettings v-if="currentTab === 'mqtt'"/>
+    <DataManagement v-if="currentTab === 'data'"/>
   </div>
 </template>
 

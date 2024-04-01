@@ -45,6 +45,10 @@ export const useDataSourceStore = defineStore('data_source', {
                     this.dataSources = this.dataSources.filter(dataSource => dataSource.id !== id);
                     this.dataSources.push(res.data);
                 });
+        },
+        clear() {
+            this.dataSources = [];
+            this.groups = [];
         }
     }
 })

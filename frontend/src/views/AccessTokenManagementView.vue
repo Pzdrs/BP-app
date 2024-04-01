@@ -1,18 +1,14 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {closeModalByQuery, openModal, setupModals} from "@/utils/modal";
-import UserModal from "@/components/modal/UserModal.vue";
-import UserRegistrationModal from "@/components/modal/UserRegistrationModal.vue";
-import UserUpdateModal from "@/components/modal/UserUpdateModal.vue";
 import {useToast} from "vue-toast-notification";
 import {useTokenStore} from "@/stores/access_token.store";
 import NoAccessTokensIssuedYet from "@/components/message/NoAccessTokensIssuedYet.vue";
-import {getFullName} from "../utils/user";
-import {localizeDateTime, toDate} from "../utils/dates";
+import {getFullName} from "@/utils/user";
+import {localizeDateTime, toDate} from "@/utils/dates";
 import Modal from "@/components/modal/Modal.vue";
-import UserRoleTag from "@/components/UserRoleTag.vue";
 import AccessTokenUpdateModal from "@/components/modal/AccessTokenUpdateModal.vue";
-import AcessTokenIssueModal from "@/components/modal/AcessTokenIssueModal.vue";
+import AccessTokenIssueModal from "@/components/modal/AccessTokenIssueModal.vue";
 
 const tokenStore = useTokenStore();
 const $toast = useToast({position: 'top-right'});
@@ -131,7 +127,7 @@ onMounted(() => setupModals());
 
   <AccessTokenUpdateModal id="update" :token="currentToken"/>
 
-  <AcessTokenIssueModal/>
+  <AccessTokenIssueModal/>
 </template>
 
 <style scoped>

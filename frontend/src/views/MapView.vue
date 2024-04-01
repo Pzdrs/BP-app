@@ -175,8 +175,8 @@ onMounted(() => {
       <div id="data-sources" class="column is-6">
         <p class="is-size-4">Data sources</p>
         <hr class="my-2">
-        <NoDataSourcesAdoptedYetMessage v-if="dataSourceStore.dataSources.length === 0"/>
-        <div v-for="dataSource in dataSourceStore.dataSources" :key="dataSource.id" class="field">
+        <NoDataSourcesAdoptedYetMessage v-if="dataSourceStore.getAdoptedDataSources.length === 0"/>
+        <div v-for="dataSource in dataSourceStore.getAdoptedDataSources" :key="dataSource.id" class="field">
           <label class="checkbox">
             <input type="checkbox" @change="dataSourceChanged" :style="{'accent-color': dataSource.color}" :data-source-id="dataSource.id">
             {{ getDisplayName(dataSource) }}

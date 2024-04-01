@@ -28,13 +28,13 @@ dataSourceStore.loadDataSources();
 dataSourceStore.loadGroups();
 
 async function submit(event) {
-  function drawSegment(point, previousPoint, dataSource, follow = false) {
+  function drawSegment(point, previousPoint, dataSource) {
     let dataPoint = L.circle(point, {
       color: dataSource.color,
       fillOpacity: 1,
       radius: 1
     }).addTo(map);
-    if (follow) map.flyTo([point.lat, point.lng], 18);
+    if (follow.value) map.flyTo([point.lat, point.lng], 18);
 
     dataPoint.bindPopup(getPopUpHTML(point, previousPoint))
 
@@ -96,7 +96,7 @@ async function submit(event) {
       }
     }
     const dataSource = dataSourceStore.getDataSourceById(point.source);
-    drawSegment(point, lastDataPoint, dataSource, selectedDataSources.length === 1);
+    drawSegment(point, lastDataPoint, dataSource);
     lastDataPoint = point;
   })
 

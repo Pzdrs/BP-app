@@ -1,6 +1,7 @@
 package cz.pycrs.bp.backend.service.impl;
 
 import cz.pycrs.bp.backend.entity.notification.Notification;
+import cz.pycrs.bp.backend.entity.notification.dto.NotificationDetail;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.repository.NotificationRepository;
 import cz.pycrs.bp.backend.service.NotificationService;
@@ -47,7 +48,7 @@ public class NotificationServiceImpl implements NotificationService {
         notification = notificationRepository.save(notification);
         try {
             SseEmitter sseEmitter = userEmitters.get(user.getId().toString());
-            if (sseEmitter != null) sseEmitter.send(notification);
+            if (sseEmitter != null) sseEmitter.send(new NotificationDetail(notification));
         } catch (IOException e) {
             logger.error(LogMessage.format("Failed to send notification to user %s", user.getId()), e);
         }

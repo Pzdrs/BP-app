@@ -7,10 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.time.LocalDateTime;
@@ -48,5 +45,10 @@ public class DataPointController {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         return dataSourceService.registerEmitter(session, dataSources);
+    }
+
+    @DeleteMapping("/erase")
+    public void eraseAll() {
+        dataPointService.deleteAllDataPoints();
     }
 }

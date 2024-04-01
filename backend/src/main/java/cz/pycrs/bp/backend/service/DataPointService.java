@@ -9,4 +9,6 @@ public interface DataPointService {
     void create(DataPoint dataPoint);
 
     List<DataPoint> getAllBySource(String source, LocalDateTime start, LocalDateTime end);
+
+    void deleteAllDataPoints();
 }

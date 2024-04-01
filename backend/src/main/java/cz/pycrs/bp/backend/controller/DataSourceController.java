@@ -1,7 +1,6 @@
 package cz.pycrs.bp.backend.controller;
 
 import cz.pycrs.bp.backend.entity.datasource.dto.DataSourceDetail;
-import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.payload.DataSourceAdoptionRequest;
 import cz.pycrs.bp.backend.payload.DataSourceUpdateRequest;
 import cz.pycrs.bp.backend.service.DataSourceService;
@@ -41,5 +40,10 @@ public class DataSourceController {
     @GetMapping("/groups")
     public List<String> allUniqueGroups() {
         return dataSourceService.getUniqueGroups();
+    }
+
+    @DeleteMapping("/erase")
+    public void eraseAll() {
+        dataSourceService.deleteAllDataSources();
     }
 }

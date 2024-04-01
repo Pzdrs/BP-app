@@ -53,4 +53,9 @@ public class DataPointServiceImpl implements DataPointService {
                     return timestamp.isAfter(start) && timestamp.isBefore(end);
                 }).toList();
     }
+
+    @Override
+    public void deleteAllDataPoints() {
+        dataPointRepository.deleteAll();
+    }
 }

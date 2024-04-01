@@ -87,6 +87,11 @@ public class DataSourceServiceImpl implements DataSourceService {
     }
 
     @Override
+    public void deleteAllDataSources() {
+        dataSourceRepository.deleteAll();
+    }
+
+    @Override
     public DataSource adoptDataSource(String id, DataSourceAdoptionRequest request) {
         Optional<DataSource> dataSourceOptional = dataSourceRepository.findById(id);
         if (dataSourceOptional.isEmpty()) {

@@ -22,6 +22,7 @@ public interface DataSourceService {
     List<DataSource> getAllDataSourcesForUser(Authentication authentication);
 
     void deleteDataSource(String id);
+    void deleteAllDataSources();
 
     DataSource adoptDataSource(String id, DataSourceAdoptionRequest request);
 

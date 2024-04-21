@@ -23,7 +23,7 @@ if __name__ == '__main__':
     for i, (lat, lng) in enumerate(coords):
         client.publish('gnss', json.dumps({
             'source': SOURCE,
-            'lat': lat, 'lng': lng, 'alt': 0,
+            'lat': lat, 'lng': lng, 'alt': 384,
             'speed': random.randint(0, 150), 'course': random.randint(0, 360),
         }))
         print(f'Published {lat}, {lng}')

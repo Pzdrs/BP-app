@@ -6,11 +6,11 @@ from bson import ObjectId
 
 from kml_extract import get_coords
 
-SOURCE = '65e820a370726bf8fb0079f1'
-FILE = 'data/officeo.kml'
+SOURCE = '66131f9aa896d600e0bc78ae'
+FILE = 'data/avetech.kml'
 
 if __name__ == '__main__':
-    MONGO_CLIENT = pymongo.MongoClient("mongodb://localhost:27017/")
+    MONGO_CLIENT = pymongo.MongoClient("mongodb://10.0.0.15:27017/")
     DATABASE = MONGO_CLIENT["es-gps"]
 
     coords = get_coords(FILE)

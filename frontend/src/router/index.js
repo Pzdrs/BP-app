@@ -64,7 +64,7 @@ const router = createRouter({
                     meta: {
                         nav: true,
                         icon: 'fa-solid fa-key',
-                        rolesAny: ['ADMINISTRATOR']
+                        rolesAny: ['ADMINISTRATOR', 'USER']
                     },
                     component: () => import('../views/AccessTokenManagementView.vue')
                 }, {

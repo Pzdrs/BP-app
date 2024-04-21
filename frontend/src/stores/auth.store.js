@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia'
+import {defineStore, getActivePinia} from 'pinia'
 import authService from "@/services/auth.service";
 import {getFullName} from "@/utils/user";
 import {useNotificationStore} from "@/stores/notification.store";
@@ -60,7 +60,9 @@ export const useAuthStore = defineStore('auth', {
          */
         signOut() {
             return authService.logout()
-                .then(() => this.details = null);
+                .then(() => {
+                    getActivePinia()._s.forEach(store => store.$reset());
+                });
         }
     }
 })

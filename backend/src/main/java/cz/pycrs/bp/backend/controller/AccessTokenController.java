@@ -2,6 +2,9 @@ package cz.pycrs.bp.backend.controller;
 
 import cz.pycrs.bp.backend.entity.accesstoken.AccessToken;
 import cz.pycrs.bp.backend.entity.accesstoken.dto.AccessTokenDetail;
+import cz.pycrs.bp.backend.entity.datasource.DataSource;
+import cz.pycrs.bp.backend.entity.user.Role;
+import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.payload.AccessTokenIssueRequest;
 import cz.pycrs.bp.backend.payload.AccessTokenUpdateRequest;
 import cz.pycrs.bp.backend.service.TokenService;
@@ -10,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -19,8 +23,8 @@ public class AccessTokenController {
     private final TokenService tokenService;
 
     @GetMapping("/all")
-    public Set<AccessTokenDetail> all() {
-        return tokenService.getAllTokens().stream()
+    public Set<AccessTokenDetail> all(Authentication authentication) {
+        return tokenService.getAllTokens(authentication).stream()
                 .map(token -> new AccessTokenDetail(((AccessToken) token)))
                 .collect(Collectors.toSet());
     }

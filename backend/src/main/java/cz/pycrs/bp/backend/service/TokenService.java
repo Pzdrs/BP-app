@@ -8,9 +8,9 @@ import org.springframework.security.core.token.Token;
 import java.util.Set;
 
 public interface TokenService {
-    Token getAccessToken(String key);
+    Token getAccessToken(String valueOrId);
 
-    Set<Token> getAllTokens();
+    Set<Token> getAllTokens(Authentication authentication);
 
     Token issueToken(Authentication authentication, AccessTokenIssueRequest request);
 

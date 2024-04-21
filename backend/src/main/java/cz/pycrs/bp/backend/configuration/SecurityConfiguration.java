@@ -1,5 +1,6 @@
 package cz.pycrs.bp.backend.configuration;
 
+import cz.pycrs.bp.backend.entity.accesstoken.AccessToken;
 import cz.pycrs.bp.backend.entity.user.Role;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.security.JsonUsernamePasswordAuthenticationFilter;
@@ -96,7 +97,19 @@ public class SecurityConfiguration implements WebMvcConfigurer {
 
                     authorize.requestMatchers("/notification/**").authenticated();
 
-                    authorize.requestMatchers("/token/**").authenticated();
+                    authorize.requestMatchers(HttpMethod.GET, "/token/**").authenticated();
+                    authorize.requestMatchers("/token/issue").authenticated();
+                    authorize.requestMatchers("/token/{id}").access((authentication, object) -> {
+                        Authentication auth = authentication.get();
+                        System.out.println(object.getVariables().get("id"));
+                        var token = ((AccessToken) tokenService.getAccessToken(object.getVariables().get("id")));
+                        System.out.println(token);
+                        return new AuthorizationDecision(
+                                auth.getAuthorities().contains(Role.ADMINISTRATOR.getAuthority())
+                                        || (User.from(auth)).getId().equals(token.getUser().getId())
+                        );
+                    });
+
 
                     authorize.anyRequest().denyAll();
                 })

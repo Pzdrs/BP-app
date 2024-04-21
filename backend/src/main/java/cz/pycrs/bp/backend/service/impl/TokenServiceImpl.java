@@ -1,6 +1,7 @@
 package cz.pycrs.bp.backend.service.impl;
 
 import cz.pycrs.bp.backend.entity.accesstoken.AccessToken;
+import cz.pycrs.bp.backend.entity.user.Role;
 import cz.pycrs.bp.backend.entity.user.User;
 import cz.pycrs.bp.backend.payload.AccessTokenIssueRequest;
 import cz.pycrs.bp.backend.payload.AccessTokenUpdateRequest;
@@ -14,12 +15,20 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
     private final AccessTokenRepository accessTokenRepository;
+
+    public static final BiPredicate<AccessToken, Object> IS_VISIBLE_TO_USER = (token, authentication) -> {
+        var user = User.from((Authentication) authentication);
+        return user.getRole() == Role.ADMINISTRATOR || token.getUser().getId().equals(user.getId());
+    };
 
 
     private static final SecureRandom secureRandom = new SecureRandom(); //threadsafe
@@ -27,13 +36,16 @@ public class TokenServiceImpl implements TokenService {
     private static final int TOKEN_LENGTH = 32;
 
     @Override
-    public Token getAccessToken(String key) {
-        return accessTokenRepository.findByValue(key).orElse(null);
+    public Token getAccessToken(String valueOrId) {
+        Optional<AccessToken> byValue = accessTokenRepository.findByValue(valueOrId);
+        return byValue.orElseGet(() -> accessTokenRepository.findById(valueOrId).orElse(null));
     }
 
     @Override
-    public Set<Token> getAllTokens() {
-        return Set.copyOf(accessTokenRepository.findAll());
+    public Set<Token> getAllTokens(Authentication authentication) {
+        return Set.copyOf(accessTokenRepository.findAll().stream()
+                .filter(token -> IS_VISIBLE_TO_USER.test(token, authentication)).collect(Collectors.toSet())
+        );
     }
 
     @Override

@@ -96,7 +96,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
 
                     authorize.requestMatchers("/notification/**").authenticated();
 
-                    authorize.requestMatchers("/token/**").hasRole(Role.ADMINISTRATOR.name());
+                    authorize.requestMatchers("/token/**").authenticated();
 
                     authorize.anyRequest().denyAll();
                 })

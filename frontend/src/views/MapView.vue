@@ -6,7 +6,9 @@ import bulmaCalendar from "bulma-calendar";
 import NoDataSourcesAdoptedYetMessage from "@/components/message/NoDataSourcesAdoptedYetMessage.vue";
 import {useToast} from "vue-toast-notification";
 import {distance, getPopUpHTML} from "@/utils/dataPoint";
-import {getDisplayName} from "../utils/dataSource";
+import {getDisplayName} from "@/utils/dataSource";
+import {Chart, registerables} from "chart.js";
+import DataPointBreakdownChart from "@/components/DataPointBreakdownChart.vue";
 
 const loading = ref(false);
 
@@ -136,7 +138,7 @@ function setupCalendars() {
 function dataSourceChanged(e) {
   if (e.target.checked) {
     selectedDataSourcesCount.value++;
-    if(selectedDataSourcesCount.value > 1) {
+    if (selectedDataSourcesCount.value > 1) {
       follow.value = false;
     }
   } else {
@@ -178,7 +180,8 @@ onMounted(() => {
         <NoDataSourcesAdoptedYetMessage v-if="dataSourceStore.getAdoptedDataSources.length === 0"/>
         <div v-for="dataSource in dataSourceStore.getAdoptedDataSources" :key="dataSource.id" class="field">
           <label class="checkbox">
-            <input type="checkbox" @change="dataSourceChanged" :style="{'accent-color': dataSource.color}" :data-source-id="dataSource.id">
+            <input type="checkbox" @change="dataSourceChanged" :style="{'accent-color': dataSource.color}"
+                   :data-source-id="dataSource.id">
             {{ getDisplayName(dataSource) }}
           </label>
         </div>
@@ -186,6 +189,7 @@ onMounted(() => {
       <div class="column is-6">
         <p class="is-size-4">Timeframe</p>
         <hr class="my-2">
+        <DataPointBreakdownChart/>
         <div class="is-flex is-justify-content-space-around">
           <input name="from" type="datetime-local">
           <input name="to" type="datetime-local">
@@ -195,7 +199,9 @@ onMounted(() => {
     <div class="field is-flex is-justify-content-flex-end">
       <div class="buttons">
         <div class="field pr-3">
-          <input id="switchOutlinedDefault" @click="e=>follow=e.target.checked" :checked="follow" :disabled="selectedDataSourcesCount > 1" type="checkbox" name="switchOutlinedDefault" class="switch is-outlined" checked="checked">
+          <input id="switchOutlinedDefault" @click="e=>follow=e.target.checked" :checked="follow"
+                 :disabled="selectedDataSourcesCount > 1" type="checkbox" name="switchOutlinedDefault"
+                 class="switch is-outlined" checked="checked">
           <label for="switchOutlinedDefault">Follow</label>
         </div>
 

@@ -7,4 +7,7 @@ export default {
         })
         return new EventSource(`${api.defaults.baseURL}/datapoint/listen?${params}`, {withCredentials: true});
     },
+    getMonthlyBreakdown: () => {
+        return api.get(`/datapoint/breakdown`);
+    }
 }

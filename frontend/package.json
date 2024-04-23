@@ -20,15 +20,16 @@
     "bulma-list": "^1.2.0",
     "bulma-modal-fx": "^1.1.1",
     "bulma-switch": "^2.0.4",
+    "chart.js": "^4.4.2",
     "leaflet": "^1.9.4",
     "momentjs": "^2.0.0",
     "pinia": "^2.1.7",
     "vue": "^3.3.4",
+    "vue-chartjs": "^5.3.1",
     "vue-router": "^4.2.5",
     "vue-toast-notification": "^3.1.2"
   },
   "devDependencies": {
-    "@creativebulma/bulma-collapsible": "^1.0.4",
     "@vitejs/plugin-vue": "^4.4.0",
     "eslint": "^8.49.0",
     "eslint-plugin-vue": "^9.17.0",

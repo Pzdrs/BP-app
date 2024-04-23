@@ -9,6 +9,7 @@ import cz.pycrs.bp.backend.service.DataSourceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.log.LogMessage;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -16,12 +17,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class DataPointServiceImpl implements DataPointService {
     private final DataPointRepository dataPointRepository;
     private final DataSourceService dataSourceService;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public void create(DataPoint dataPoint) {
@@ -52,6 +57,11 @@ public class DataPointServiceImpl implements DataPointService {
                     LocalDateTime timestamp = dataPoint.getTimestamp().toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
                     return timestamp.isAfter(start) && timestamp.isBefore(end);
                 }).toList();
+    }
+
+    @Override
+    public List<DataPointRepository.MonthlyBreakdown> getMonthlyBreakdown() {
+        return dataPointRepository.getMonthlyBreakdown();
     }
 
     @Override

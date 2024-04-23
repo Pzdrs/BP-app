@@ -1,6 +1,7 @@
 package cz.pycrs.bp.backend.controller;
 
 import cz.pycrs.bp.backend.entity.datapoint.dto.DataPointDetail;
+import cz.pycrs.bp.backend.payload.MonthlyDataPointBreakdown;
 import cz.pycrs.bp.backend.service.DataPointService;
 import cz.pycrs.bp.backend.service.DataSourceService;
 import jakarta.servlet.http.HttpSession;
@@ -30,6 +31,11 @@ public class DataPointController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end
     ) {
         return dataPointService.getAllBySource(source, start, end).stream().map(DataPointDetail::new).toList();
+    }
+
+    @GetMapping("/breakdown")
+    public List<MonthlyDataPointBreakdown> breakdown() {
+        return dataPointService.getMonthlyBreakdown().stream().map(MonthlyDataPointBreakdown::new).toList();
     }
 
     @GetMapping(

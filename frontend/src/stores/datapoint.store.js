@@ -8,7 +8,8 @@ export const useDataPointStore = defineStore('data_point', {
     state: () => ({
         dataPoints: [],
         dataSources: [],
-        monthlyCounts: []
+        monthlyCounts: [],
+        eventSource: null
     }),
     getters: {
         getLatLngs: (state) => {
@@ -60,8 +61,8 @@ export const useDataPointStore = defineStore('data_point', {
             });
         },
         listen(dataSources, handler) {
-            const eventSource = datapointService.listen(dataSources);
-            eventSource.addEventListener('message', ev => {
+            this.eventSource = datapointService.listen(dataSources);
+            this.eventSource.addEventListener('message', ev => {
                 const dataPoint = JSON.parse(ev.data);
                 this.dataPoints.push(dataPoint);
                 handler(dataPoint);

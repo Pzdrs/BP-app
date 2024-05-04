@@ -72,6 +72,7 @@ async function submit(event) {
 
       $toast.success(`Fetched ${dataPoints.length} data points from <b>${dataSource.name}</b>`);
 
+      const renderTimeStart = new Date();
       for (let i = 0; i < dataPoints.length; i++) {
         const point = dataPoints[i];
         lastDataPoint = i === 0 ? {
@@ -82,6 +83,8 @@ async function submit(event) {
 
         drawSegment(point, lastDataPoint, dataSource);
       }
+      const renderTimeEnd = new Date();
+      console.log(`Rendering ${dataSource.name} data points took ${renderTimeEnd - renderTimeStart}ms`);
     });
   }
 

@@ -86,6 +86,10 @@ function createNewGroup() {
   if (newGroup.length > 0) document.querySelector('select[name="groups"]').append(new Option(newGroup, newGroup));
 }
 
+function randomizeColor(target) {
+  target.target.parentElement.parentElement.querySelector('input[name="color"]').value = getRandomHexColor();
+}
+
 onMounted(() => {
   setupModals();
 });
@@ -204,10 +208,15 @@ onMounted(() => {
             </div>
           </div>
 
-          <div class="field">
-            <label class="label">Color</label>
-            <div class="control">
+          <label class="label">Color</label>
+          <div class="field has-addons">
+            <div class="control is-expanded">
               <input name="color" class="input" type="color" :value="currentDataSource.color" required>
+            </div>
+            <div class="control">
+              <button class="button" title="Random color" @click.prevent="randomizeColor">
+                Randomize
+              </button>
             </div>
           </div>
 

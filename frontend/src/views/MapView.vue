@@ -18,6 +18,8 @@ let timeframe = [];
 
 let lastDataPoint;
 
+let progress = ref(false);
+
 let follow = ref(true);
 let selectedDataSourcesCount = ref(0);
 
@@ -106,11 +108,15 @@ async function submit(event) {
   })
 
   loading.value = false;
+  progress.value = true;
   window.location.href = '#map';
 }
 
 function clear() {
   dataPointStore.clear();
+  dataPointStore.eventSource.close();
+
+  document.querySelectorAll('#data-sources input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
 
   // Reset map
   map.eachLayer(layer => {
@@ -120,6 +126,7 @@ function clear() {
   });
 
   setupCalendars();
+  progress.value = false;
 }
 
 function setupCalendars() {
@@ -208,14 +215,14 @@ onMounted(() => {
           <label for="switchOutlinedDefault">Follow</label>
         </div>
 
-        <button class="button is-danger" @click.prevent="clear">
+        <button class="button is-danger" @click.prevent="clear" :disabled="!progress">
       <span class="icon">
         <i class="fa-solid fa-xmark"></i>
       </span>
           <span>Clear</span>
         </button>
 
-        <button class="button is-primary" :class="loading ? 'is-loading':''">
+        <button class="button is-primary" :class="loading ? 'is-loading':''" :disabled="progress">
       <span class="icon">
         <i class="fa-solid fa-check"></i>
       </span>

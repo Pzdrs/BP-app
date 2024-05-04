@@ -4,13 +4,13 @@ import random
 import pymongo
 from bson import ObjectId
 
-SOURCE = '66281789c4fc8b51c98881be'
+SOURCE = '66139d36e23a4f2817e35ae6'
 
 if __name__ == '__main__':
-    MONGO_CLIENT = pymongo.MongoClient("mongodb://localhost:27017/")
+    MONGO_CLIENT = pymongo.MongoClient("mongodb://10.0.0.15:27017/")
     DATABASE = MONGO_CLIENT["es-gps"]
 
-    for i in range(100000):
+    for i in range(9000):
         DATABASE.datapoints.insert_one({
             'lat': 56.3215, 'lng': 14.26456, 'alt': 0,
             'source': ObjectId(SOURCE),

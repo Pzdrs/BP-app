@@ -6,9 +6,9 @@ from bson import ObjectId
 
 from kml_extract import get_coords
 
-SOURCE = '66365731344cb13635d26a48'
+SOURCE = '66367723344cb13635d26a60'
 PERIOD = 5  # seconds
-FILE = 'data/avetech.kml'
+FILE = 'data/officeo.kml'
 
 if __name__ == '__main__':
     MONGO_CLIENT = pymongo.MongoClient("mongodb://10.0.0.15:27017/")

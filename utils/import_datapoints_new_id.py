@@ -21,4 +21,4 @@ def import_json_to_mongodb(json_file):
 
 
 if __name__ == "__main__":
-    import_json_to_mongodb('data/mseno-chorusice-5s.json')
+    import_json_to_mongodb('data/mseno-chorusice-1s.json')
